@@ -49,27 +49,33 @@
           <table style="width:100%;border:0px;border-spacing:0px 10px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
 
 
-<tr class="stack" onmouseout="poseguard_stop()" onmouseover="poseguard_start()" bgcolor="#ffffd0">
-  <td style="padding:16px;width:30%;vertical-align:middle">
-    <div class="wide">
-      <div class="two-wide" id='poseguard_image'><video width=100% muted autoplay loop playsinline>
-      <source src="images/poseguard.mp4" type="video/mp4">
+<tr class="stack" onmouseleave="poseguard_stop()" onmouseenter="poseguard_start()" bgcolor="#ffffd0">
+  <td style="padding:16px;width:20%;vertical-align:middle">
+    <div class="one">
+      <div class="two" id='poseguard_image'><video id='poseguard_video' width=100% height=100% muted loop playsinline preload="auto">
+      <source src="images/poseguard_after.mp4" type="video/mp4">
       Your browser does not support the video tag.
       </video></div>
-      <img src='images/poseguard_still.jpg' width=100% alt="Orbit renders of Lego under 5% camera translation noise: fixed cameras (left) are blurry, joint pose optimization with warm-up (right) is sharp">
+      <img src='images/poseguard_before.jpg' width="160" alt="Lego under 5% translation noise: fixed cameras (blurry); on hover, a wipe reveals joint pose optimization with warm-up (sharp)">
     </div>
     <script type="text/javascript">
+      // Restart from frame 0, which is identical to the still, so the wipe always begins from the Fixed view.
       function poseguard_start() {
+        var v = document.getElementById('poseguard_video');
+        v.currentTime = 0;
+        var p = v.play();
+        if (p) p.catch(function() {});
         document.getElementById('poseguard_image').style.opacity = "1";
       }
 
       function poseguard_stop() {
+        document.getElementById('poseguard_video').pause();
         document.getElementById('poseguard_image').style.opacity = "0";
       }
       poseguard_stop()
     </script>
   </td>
-  <td style="padding:8px;width:70%;vertical-align:middle">
+  <td style="padding:8px;width:80%;vertical-align:middle">
     <a href="poseguard-nerf/">
       <span class="papertitle">PoseGuard-NeRF: When Does Joint Camera-Pose Optimization Help NeRF, and When Does It Just Move the World?</span>
     </a>
