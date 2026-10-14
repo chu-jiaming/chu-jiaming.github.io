@@ -1,0 +1,170 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>PoseGuard-NeRF</title>
+
+    <meta name="author" content="Jiaming Chu">
+    <meta name="description" content="When does joint camera-pose optimization help NeRF, and when does it just move the world? A controlled study of 45 vanilla-NeRF runs with a Sim(3) drift diagnostic.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="PoseGuard-NeRF">
+    <meta property="og:description" content="When does joint camera-pose optimization help NeRF, and when does it just move the world?">
+    <meta property="og:image" content="https://chu-jiaming.github.io/poseguard-nerf/assets/social_preview.png">
+    <meta property="og:url" content="https://chu-jiaming.github.io/poseguard-nerf/">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="stylesheet" type="text/css" href="../stylesheet.css">
+
+    <style>
+      .page { max-width: 800px; margin: 0 auto; padding: 0 16px 40px; }
+      .title { font-size: 30px; text-align: center; margin: 36px 0 8px; line-height: 1.25; }
+      .title strong { font-size: inherit; }
+      .subtitle { font-size: 18px; text-align: center; color: #555; margin: 0 0 12px; font-style: italic; }
+      .authors { text-align: center; font-size: 16px; margin: 0 0 4px; }
+      .venue { text-align: center; color: #555; margin: 0 0 18px; }
+      .buttons { text-align: center; margin-bottom: 28px; }
+      .buttons a { display: inline-block; margin: 4px; padding: 7px 16px; border-radius: 18px; background: #333; color: #fff; font-size: 14px; }
+      .buttons a:hover { background: #f09228; color: #fff; }
+      h2 { margin-top: 36px; margin-bottom: 8px; }
+      p, li { line-height: 1.55; }
+      figure { margin: 18px 0; text-align: center; }
+      figure img, figure video { max-width: 100%; height: auto; }
+      figcaption { font-size: 13px; color: #555; margin-top: 6px; text-align: left; }
+      .tldr { background: #ffffd0; border-radius: 10px; padding: 14px 20px; }
+      .tldr li { margin: 6px 0; }
+      table.results { border-collapse: collapse; margin: 12px auto; }
+      table.results th, table.results td { padding: 5px 14px; border-bottom: 1px solid #ddd; }
+      table.results td.num, table.results th.num { text-align: right; font-variant-numeric: tabular-nums; }
+      pre { background: #f5f5f5; padding: 12px 14px; border-radius: 8px; overflow-x: auto; font-size: 13px; }
+      .footer { text-align: right; font-size: small; margin-top: 36px; }
+    </style>
+  </head>
+
+  <body>
+    <div class="page">
+
+      <p class="title"><strong>PoseGuard-NeRF</strong></p>
+      <p class="subtitle">When does joint camera-pose optimization help NeRF,<br>and when does it just move the world?</p>
+      <p class="authors"><a href="../">Jiaming Chu</a></p>
+      <p class="venue">Independent research project, 2026</p>
+
+      <div class="buttons">
+        <a href="https://github.com/chu-jiaming/PoseGuard-NeRF">Code</a>
+        <a href="https://github.com/chu-jiaming/PoseGuard-NeRF/releases/tag/v1.0.0">Release v1.0.0 &amp; checkpoints</a>
+        <a href="https://github.com/chu-jiaming/PoseGuard-NeRF/blob/main/docs/EXPERIMENTS.md">Protocol</a>
+      </div>
+
+      <figure>
+        <video width="560" muted autoplay loop playsinline poster="../images/poseguard_still.jpg">
+          <source src="../images/poseguard.mp4" type="video/mp4">
+        </video>
+        <figcaption>Lego with 5% translation noise on every training camera. Left: fixed cameras, 14.1 dB test PSNR. Right: joint pose optimization with a camera learning-rate warm-up, 22.7 dB. Same data, same 30k steps.</figcaption>
+      </figure>
+
+      <div class="tldr">
+        <strong>TL;DR</strong>
+        <ul>
+          <li><strong>Small pose errors wreck fixed-camera NeRF.</strong> Test PSNR falls from 27.1 dB to 14.1 dB at 5% translation noise and to 12.0 dB at 5&deg; rotation noise.</li>
+          <li><strong>Joint pose optimization recovers much of it.</strong> A camera learning-rate warm-up makes the naive version better in 9/9 conditions (+4.3 dB on average; 14.1 &rarr; 22.7 dB at 5% translation noise).</li>
+          <li><strong>But turning it on from perfect poses <em>lowers</em> PSNR from 27.1 to 17.9 dB.</strong> The reconstruction drifts as a whole: a Sim(3) fitted only on training camera centers, with the network frozen, recovers +5.5 dB (Naive) and +6.1 dB (CamP-style). Raw test metrics conflate scene quality with global coordinate drift.</li>
+        </ul>
+      </div>
+
+      <h2>Question</h2>
+      <p>
+        Real capture pipelines never give NeRF perfect camera poses, so a common remedy is to optimize per-camera pose corrections jointly with the radiance field. This raises two questions that are usually answered with a single test-PSNR number: <em>how much</em> does joint optimization help under a given amount of pose noise, and when test PSNR goes down, is the reconstruction actually worse, or is it a good reconstruction sitting in a slightly different coordinate frame than the held-out test cameras?
+      </p>
+
+      <h2>Controlled design</h2>
+      <p>
+        All runs use Nerfstudio's vanilla-NeRF on the Lego scene, trained for 30k steps. I perturb the training cameras at <strong>9 noise levels</strong> (no noise; translation 0.5 / 1 / 2 / 5%; rotation 0.5 / 1 / 2 / 5&deg;) and train <strong>5 methods</strong> on each, for <strong>45 runs</strong> in total:
+      </p>
+      <ul>
+        <li><strong>Fixed cameras:</strong> the noisy poses are used as given.</li>
+        <li><strong>Naive:</strong> a 6-D SO(3) &times; R&sup3; correction per training camera, optimized jointly with the field.</li>
+        <li><strong>CamP-style:</strong> the same correction in a preconditioned space that whitens each camera's projection Jacobian, re-implemented from the idea of <a href="https://camp-nerf.github.io/">CamP</a> (not the original code).</li>
+        <li><strong>Naive + warm-up</strong> and <strong>CamP-style + warm-up:</strong> the camera learning rate ramps from 1e-8 to 1e-3 over the first 2,500 steps instead of starting at 1e-3.</li>
+      </ul>
+      <p>
+        Every run is followed by a <strong>pose audit</strong> and a <strong>Sim(3) alignment diagnostic</strong>: fit a similarity transform between ground-truth and optimized <em>training</em> camera centers, apply it to the test cameras, and re-render with the network frozen. No test image is used for fitting and no weight is updated, so any gain comes purely from undoing a global change of frame.
+      </p>
+      <figure>
+        <img src="assets/perturbation_grid.png" alt="Renders of one test view for all five methods under 5% translation and 5 degree rotation noise">
+        <figcaption>One test view for all five methods under 5% translation and 5&deg; rotation noise.</figcaption>
+      </figure>
+
+      <h2>Finding 1: pose noise breaks fixed cameras; joint optimization recovers</h2>
+      <p>
+        Fixed-camera NeRF is surprisingly fragile: test PSNR drops from 27.1 dB with exact poses to 14.1 dB at 5% translation noise and 12.0 dB at 5&deg; rotation noise. Joint pose optimization recovers most of this quality, and the recovered training cameras move back close to their ground-truth positions.
+      </p>
+      <figure>
+        <img src="assets/psnr_matrix.png" width="620" alt="Heatmap of test PSNR for 9 pose conditions by 5 methods">
+        <figcaption>Test PSNR for all 45 runs (9 pose conditions &times; 5 methods).</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/camera_correction.png" alt="Training-camera center errors before and after joint pose optimization, magnified 10x">
+        <figcaption>Training-camera center errors before and after joint pose optimization (magnified 10&times;).</figcaption>
+      </figure>
+
+      <h2>Finding 2: a camera learning-rate warm-up matters</h2>
+      <p>
+        Starting the camera learning rate near zero and ramping it up over 2,500 steps makes Naive pose optimization better in <strong>9/9</strong> pose conditions, by <strong>+4.3 dB</strong> on average. At 5% translation noise it lifts test PSNR from 14.1 dB (fixed cameras) to 22.7 dB.
+      </p>
+
+      <h2>Finding 3: most of the &ldquo;drop from perfect poses&rdquo; is coordinate drift</h2>
+      <p>
+        The counter-intuitive case is the noise-free one. Enabling Naive pose optimization from exact poses lowers test PSNR from 27.1 dB to 17.9 dB, which naively reads as &ldquo;pose optimization damages the scene.&rdquo; The renders say otherwise: they are sharp but shifted, so the error concentrates on object edges. Re-rendering the test cameras after a Sim(3) fitted on training camera centers only, with the network frozen, recovers <strong>+5.5 dB</strong> for Naive and <strong>+6.1 dB</strong> for CamP-style.
+      </p>
+      <figure>
+        <img src="assets/hero_drift.png" alt="Ground truth, fixed-camera, naive raw and naive Sim(3)-aligned renders with per-pixel error maps">
+        <figcaption>Same checkpoint, same test camera. PSNR values in this figure are for this <em>single test view</em>; the table below reports the full 200-view evaluation.</figcaption>
+      </figure>
+      <table class="results">
+        <thead>
+          <tr><th style="text-align:left">Method (GT-pose initialization)</th><th class="num">Raw PSNR</th><th class="num">Sim(3)-aligned PSNR</th><th class="num">Gain</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Fixed cameras</td><td class="num">27.12</td><td class="num">27.12</td><td class="num">0.00</td></tr>
+          <tr><td>Naive</td><td class="num">17.91</td><td class="num">23.39</td><td class="num">+5.48</td></tr>
+          <tr><td>CamP-style</td><td class="num">19.90</td><td class="num">26.04</td><td class="num">+6.14</td></tr>
+          <tr><td>Naive + warm-up</td><td class="num">22.71</td><td class="num">26.42</td><td class="num">+3.71</td></tr>
+          <tr><td>CamP-style + warm-up</td><td class="num">21.08</td><td class="num">25.98</td><td class="num">+4.90</td></tr>
+        </tbody>
+      </table>
+      <p>
+        The pose diagnostics logged during training tell the same story: raw camera-center error plateaus, while the error left after removing one global similarity transform keeps shrinking. The scene is being reconstructed well; the world it lives in is moving.
+      </p>
+      <figure>
+        <img src="assets/drift_over_training.png" alt="Raw versus Sim(3)-aligned camera-center error over training">
+        <figcaption>Raw vs. Sim(3)-aligned training-camera center error over training.</figcaption>
+      </figure>
+
+      <h2>Takeaway</h2>
+      <p>
+        When camera poses are optimized, raw novel-view metrics measure two things at once: reconstruction quality and global coordinate drift relative to the test cameras. Reporting aligned metrics next to raw ones, using only training cameras to fit the alignment, separates the two.
+      </p>
+
+      <h2>Limitations</h2>
+      <p>
+        One scene (Lego) and one seed (42). CamP-style is a controlled re-implementation, not the official code. The warm-up changes the whole camera learning-rate schedule, so the early phase alone is not isolated. Full aligned rendering covers the GT-pose condition only. The alignment is a diagnostic of how test metrics are measured, not a new training method, and these results do not establish behavior on other scenes or seeds.
+      </p>
+
+      <h2>Reproducibility</h2>
+      <p>
+        Code, configs, metrics and poses for all 45 runs are in the <a href="https://github.com/chu-jiaming/PoseGuard-NeRF">repository</a> (MIT license). The published numbers can be re-checked on a CPU without any dataset or checkpoint, and CPU tests run in CI. The checkpoints behind the alignment table and the comparison video are attached to the <a href="https://github.com/chu-jiaming/PoseGuard-NeRF/releases/tag/v1.0.0">v1.0.0 release</a>.
+      </p>
+
+      <h2>Citation</h2>
+<pre>@misc{chu2026poseguardnerf,
+  title        = {PoseGuard-NeRF: When Does Joint Camera-Pose Optimization
+                  Help NeRF, and When Does It Just Move the World?},
+  author       = {Chu, Jiaming},
+  year         = {2026},
+  howpublished = {\url{https://github.com/chu-jiaming/PoseGuard-NeRF}},
+  note         = {Version 1.0.0}
+}</pre>
+
+      <p class="footer"><a href="../">&larr; Jiaming Chu</a></p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>Jiaming Chu</title>
+
+    <meta name="author" content="Jiaming Chu">
+    <meta name="description" content="Jiaming Chu: M.S. student at Shanghai Jiao Tong University working on 3D vision and neural rendering.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+
+  </head>
+
+  <body>
+    <table style="width:100%;max-width:800px;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+      <tr style="padding:0px">
+        <td style="padding:0px">
+          <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+            <tr style="padding:0px">
+              <td style="padding:2.5%;width:100%;vertical-align:middle">
+                <p class="name" style="text-align: center;">
+                  Jiaming Chu <span style="font-size:24px;">(褚嘉明)</span>
+                </p>
+                <p>
+                  I'm a master's student in Electronic Information at <a href="https://www.sjtu.edu.cn/">Shanghai Jiao Tong University</a> (2025&ndash;present).
+                  I received my B.Eng. in IntelliSense Engineering from <a href="https://www.hit.edu.cn/">Harbin Institute of Technology</a> in 2025.
+                </p>
+                <p>
+                  <strong>I am looking for research internships</strong> in 3D vision and neural rendering. Feel free to reach out.
+                </p>
+                <p style="text-align:center">
+                  <a href="mailto:jiaming.chu@sjtu.edu.cn">Email</a> &nbsp;/&nbsp;
+                  <a href="https://github.com/chu-jiaming">GitHub</a>
+                </p>
+              </td>
+            </tr>
+          </tbody></table>
+          <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+            <tr>
+              <td style="padding:16px;width:100%;vertical-align:middle">
+                <h2>Research</h2>
+                <p>
+                  I'm interested in 3D computer vision and neural rendering, in particular how radiance fields behave when their inputs, such as camera poses, are imperfect, and how to evaluate them so that the metrics measure what we think they measure.
+                </p>
+              </td>
+            </tr>
+          </tbody></table>
+          <table style="width:100%;border:0px;border-spacing:0px 10px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+
+
+<tr class="stack" onmouseout="poseguard_stop()" onmouseover="poseguard_start()" bgcolor="#ffffd0">
+  <td style="padding:16px;width:30%;vertical-align:middle">
+    <div class="wide">
+      <div class="two-wide" id='poseguard_image'><video width=100% muted autoplay loop playsinline>
+      <source src="images/poseguard.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+      </video></div>
+      <img src='images/poseguard_still.jpg' width=100% alt="Orbit renders of Lego under 5% camera translation noise: fixed cameras (left) are blurry, joint pose optimization with warm-up (right) is sharp">
+    </div>
+    <script type="text/javascript">
+      function poseguard_start() {
+        document.getElementById('poseguard_image').style.opacity = "1";
+      }
+
+      function poseguard_stop() {
+        document.getElementById('poseguard_image').style.opacity = "0";
+      }
+      poseguard_stop()
+    </script>
+  </td>
+  <td style="padding:8px;width:70%;vertical-align:middle">
+    <a href="poseguard-nerf/">
+      <span class="papertitle">PoseGuard-NeRF: When Does Joint Camera-Pose Optimization Help NeRF, and When Does It Just Move the World?</span>
+    </a>
+    <br>
+    <strong>Jiaming Chu</strong>
+    <br>
+    <em>Independent research project</em>, 2026
+    <br>
+    <a href="poseguard-nerf/">project page</a>
+    /
+    <a href="https://github.com/chu-jiaming/PoseGuard-NeRF">code</a>
+    /
+    <a href="https://github.com/chu-jiaming/PoseGuard-NeRF/releases/tag/v1.0.0">release v1.0.0</a>
+    <p></p>
+    <p>
+    A controlled study of 45 vanilla-NeRF runs (9 pose-noise levels &times; 5 methods): a camera learning-rate warm-up lets joint pose optimization recover most of the quality lost to noisy poses (14.1 &rarr; 22.7 dB at 5% translation noise), yet enabling it from perfect poses drops PSNR from 27.1 to 17.9 dB. A Sim(3) fit on training cameras alone recovers +5.5 dB, revealing global coordinate drift rather than a worse reconstruction.
+    </p>
+  </td>
+</tr>
+
+
+          </tbody></table>
+          <table style="width:100%;border:0px;border-spacing:0px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
+            <tr>
+              <td style="padding:0px">
+                <br>
+                <p style="text-align:right;font-size:small;">
+                  Website template from <a href="https://github.com/jonbarron/jonbarron_website">Jon Barron</a>.
+                </p>
+              </td>
+            </tr>
+          </tbody></table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
