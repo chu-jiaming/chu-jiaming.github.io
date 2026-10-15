@@ -1,0 +1,165 @@
+%-------------------------------------------------------------------------------
+% 褚嘉明 — 中文单页简历（AI / 研究实习）
+%
+% 与 resume.tex（英文版）共用同一套版式与宏，便于两版同步维护。
+% 中文排版基于 ctex 宏集；中文用苹方（macOS 自带），找不到时自动回退到
+% TeX Live 自带的 Fandol 黑体，因此在 Overleaf / Linux 上也能直接编译。
+%
+% 编译：latexmk -xelatex -outdir=build resume-zh.tex
+% 标有 "% TODO" 的行需要补充或删除。
+%-------------------------------------------------------------------------------
+\documentclass[a4paper,fontset=none]{ctexart}
+
+\usepackage[sfdefault]{FiraSans}       % 英文/数字字体，与英文版一致
+\IfFontExistsTF{PingFang SC}{%
+  \setCJKmainfont{PingFang SC}[BoldFont={PingFang SC Semibold}]
+  \setCJKsansfont{PingFang SC}[BoldFont={PingFang SC Semibold}]
+}{%
+  \setCJKmainfont{FandolHei-Regular.otf}[BoldFont=FandolHei-Bold.otf]
+  \setCJKsansfont{FandolHei-Regular.otf}[BoldFont=FandolHei-Bold.otf]
+}
+\setCJKmonofont{FandolHei-Regular.otf}
+
+\usepackage[margin=0.6in,top=0.5in,bottom=0.5in]{geometry}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{fontawesome5}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{accent}{HTML}{1F4E79}
+\definecolor{subtle}{HTML}{555555}
+\hypersetup{colorlinks=true,urlcolor=accent,linkcolor=accent}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\tabcolsep}{0pt}
+\linespread{1.15}
+\raggedright
+
+%---------------- 章节标题 ----------------
+\renewcommand{\section}[1]{%
+  \par\vspace{7pt}{\large\bfseries\color{accent}#1}\par\nobreak\vspace{-3pt}%
+  {\color{accent}\rule{\linewidth}{0.6pt}}\par\nobreak\vspace{1pt}}
+
+%---------------- 条目宏（中文不用斜体，改用灰色） ----------------
+% \entry{标题}{右侧时间}{副标题}{右侧地点}
+\newcommand{\entry}[4]{%
+  \begin{tabularx}{\linewidth}{@{}X r@{}}
+    \textbf{#1} & #2 \\
+    \textcolor{subtle}{\small #3} & \textcolor{subtle}{\small #4} \\
+  \end{tabularx}\vspace{-3pt}}
+
+% \project{标题}{链接}{时间}
+\newcommand{\project}[3]{%
+  \begin{tabularx}{\linewidth}{@{}X r@{}}
+    \textbf{#1}\ \ {\small #2} & #3 \\
+  \end{tabularx}\vspace{-3pt}}
+
+% \pub{作者}{题目}{会议/期刊}{链接}
+\newcommand{\pub}[4]{\item #1. \textbf{#2}. \textit{#3}. {\small #4}}
+
+\newcommand{\me}{\underline{Jiaming Chu}}
+\newcommand{\sep}{\ \textbar\ }
+
+\setlist[itemize]{leftmargin=1.2em,itemsep=1pt,topsep=2pt,parsep=0pt,label=\small$\bullet$}
+
+%===============================================================================
+\begin{document}
+
+%---------------- 个人信息 ----------------
+% 如需证件照：取消下面一段注释，并把照片放到 cv/photo.jpg
+% \begin{minipage}[c]{0.82\linewidth}
+\begin{center}
+  {\Huge\bfseries 褚嘉明}\\[5pt]
+  \small
+  \faEnvelope\ \href{mailto:jiaming.chu@sjtu.edu.cn}{jiaming.chu@sjtu.edu.cn}\quad
+  \faGlobe\ \href{https://chu-jiaming.github.io}{chu-jiaming.github.io}\quad
+  \faGithub\ \href{https://github.com/chu-jiaming}{github.com/chu-jiaming}\quad
+  \faPhone\ 000-0000-0000 % TODO: 手机号
+\end{center}
+% \end{minipage}\hfill
+% \begin{minipage}[c]{0.15\linewidth}
+%   \includegraphics[width=\linewidth]{photo.jpg}
+% \end{minipage}
+\vspace{-6pt}
+
+%---------------- 求职意向 ----------------
+\section{求职意向}
+算法研究实习生 —— 生成模型 / 三维重建 / 世界模型 \hfill 可实习时间：TODO % TODO: 到岗时间与时长，如“每周 4 天，6 个月”
+
+%---------------- 教育背景 ----------------
+\section{教育背景}
+\entry{上海交通大学}{2025.09 -- 至今}
+      {电子信息\ 硕士研究生}{上海}
+\begin{itemize}
+  \item 导师：TODO \sep GPA：TODO % TODO: 补充或删除本行
+\end{itemize}
+
+\vspace{3pt}
+\entry{哈尔滨工业大学}{2021.09 -- 2025.06} % TODO: 核对入学时间
+      {智能感知工程\ 工学学士}{哈尔滨}
+\begin{itemize}
+  \item GPA：TODO \sep 专业排名：TODO % TODO: 补充或删除本行
+\end{itemize}
+
+%---------------- 研究方向 ----------------
+\section{研究方向}
+生成模型、三维重建（NeRF / 3D Gaussian Splatting）与世界模型；关注辐射场在相机位姿等输入不完美时的鲁棒性，
+以及让评测指标真正度量其所声称内容的评测方法。
+
+%---------------- 论文发表 ----------------
+% 有论文 / 预印本后取消注释；\me 会给自己的名字加下划线。
+% \section{论文发表}
+% \begin{itemize}
+%   \pub{\me, A. Coauthor, B. Advisor}{Paper Title}{Conference 2027}
+%       {[\href{https://arxiv.org/abs/xxxx}{arXiv}] [\href{https://github.com/}{code}]}
+% \end{itemize}
+
+%---------------- 科研项目 ----------------
+\section{科研项目}
+\project{PoseGuard-NeRF：联合相机位姿优化何时帮助 NeRF，何时只是移动了世界？}
+  {[\href{https://chu-jiaming.github.io/poseguard-nerf/}{主页}]
+   [\href{https://github.com/chu-jiaming/PoseGuard-NeRF}{代码}]}
+  {2026}
+\begin{itemize}
+  \item 设计对照实验，共 \textbf{45 组 vanilla NeRF 训练}（9 种位姿噪声水平 $\times$ 5 种方法），
+        系统分析联合相机位姿优化在何种条件下提升或损害重建质量。
+  \item 发现相机学习率 warm-up 可恢复噪声位姿造成的大部分质量损失：
+        5\% 平移噪声下 PSNR 由 \textbf{14.1 提升至 22.7\,dB}。
+  \item 发现从真实位姿出发开启位姿优化反而使 PSNR 由 27.1 降至 17.9\,dB；仅在训练相机上拟合
+        Sim(3) 对齐即可恢复 \textbf{+5.5\,dB}，说明下降源于全局坐标系漂移而非重建本身变差。
+  \item 发布 v1.0.0，提供可复现配置、GitHub Actions 持续集成与 \texttt{uv} 环境管理。
+\end{itemize}
+
+% TODO: 再补充 1--2 个项目（本科毕设、课程项目等）
+% \project{项目名称}{[\href{https://github.com/}{代码}]}{2025}
+% \begin{itemize}
+%   \item 做了什么 + 用了什么方法 + 量化结果。
+% \end{itemize}
+
+%---------------- 实习经历 ----------------
+% \section{实习经历}
+% \entry{公司 / 实验室}{2026.06 -- 至今}{算法实习生，团队名称}{城市}
+% \begin{itemize}
+%   \item 动词开头 + 做了什么 + 怎么做 + 可量化的结果。
+% \end{itemize}
+
+%---------------- 荣誉奖项 ----------------
+% \section{荣誉奖项}
+% \begin{itemize}
+%   \item 奖学金 / 竞赛奖项 \hfill 2024  % TODO
+% \end{itemize}
+
+%---------------- 专业技能 ----------------
+\section{专业技能}
+\begin{tabularx}{\linewidth}{@{}l@{\hspace{1.2em}}X@{}}
+  \textbf{深度学习与视觉} & PyTorch, OpenCV, NumPy, NeRF \\
+  \textbf{编程语言}       & Python, C/C++, MATLAB \\
+  \textbf{系统}           & Linux, ROS \\
+  \textbf{开发工具}       & Git, GitHub Actions (CI), uv, Conda, LaTeX \\
+  \textbf{语言能力}       & 英语 TODO（CET-6 / IELTS 成绩） \\
+\end{tabularx}
+
+\end{document}
