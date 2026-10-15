@@ -50,6 +50,7 @@
 \RequirePackage{longtable}
 \setlength{\LTpre}{0.6ex}  % no extra gap around experience/project tables
 \setlength{\LTpost}{0pt}
+\setlength{\LTleft}{0pt}
 \RequirePackage[usenames,dvipsnames]{xcolor}
 \RequirePackage{tikz}
 \RequirePackage[skins]{tcolorbox}  % required by tikz to make the header
@@ -185,9 +186,11 @@
 \ifdef{\@zh}{%
   \setlength{\leftcolwidth}{6em}
 }{
-  \setlength{\leftcolwidth}{4.6em}  % fits "Sep 2025"
+  \setlength{\leftcolwidth}{7em}  % fits "Programming" in skills
 }
-\setlength{\rightcolwidth}{\dimexpr \textwidth - \leftcolwidth - 4\tabcolsep}
+% Tables are flush with the text block on both sides (@{} at the outer edges),
+% so every section shares the same left/right margins and date column.
+\setlength{\rightcolwidth}{\dimexpr \textwidth - \leftcolwidth - 2\tabcolsep - \arrayrulewidth}
 
 %%
 %% Generic commands
@@ -313,10 +316,14 @@
 \newcommand*{\homepage}[1]{%
   \iconlink{\homepageSymbol}{https://#1}{\texttt{#1}}%
 }
-% Phone number kept out of git: put \def\myphone{...} in private.tex
+% Phone number kept out of git: put \def\myphone{...} in private.tex.
+% Public builds (\def\publicbuild{} before the class, see `make publish`)
+% never show it, so the PDFs on the website carry no phone number.
 \newcommand*{\privatemobile}{%
-  \IfFileExists{private.tex}{\input{private.tex}}{}%
-  \ifdef{\myphone}{\mobile{\myphone}}{}%
+  \ifdef{\publicbuild}{}{%
+    \IfFileExists{private.tex}{\input{private.tex}}{}%
+    \ifdef{\myphone}{\mobile{\myphone}}{}%
+  }%
 }
 % Email address
 \newcommand*{\email}[1]{%
@@ -384,8 +391,8 @@
 % Basic entries listing
 \NewDocumentEnvironment{entries}{o}{%
   \IfValueTF{#1}%
-    {\begin{tabular}{R{\leftcolwidth} #1 L{\rightcolwidth}}}%
-    {\begin{tabular}{R{\leftcolwidth} L{\rightcolwidth}}}%
+    {\begin{tabular}{@{}R{\leftcolwidth} #1 L{\rightcolwidth}@{}}}%
+    {\begin{tabular}{@{}R{\leftcolwidth} L{\rightcolwidth}@{}}}%
 }{%
   \end{tabular}
 }
@@ -406,9 +413,9 @@
 % \begin{competences}[width]
 \NewDocumentEnvironment{competences}{o}{%
   \IfValueTF{#1}{%
-    \begin{tabular}{R{#1} L{\dimexpr \textwidth - #1 - 4\tabcolsep}}
+    \begin{tabular}{@{}R{#1} | L{\dimexpr \textwidth - #1 - 2\tabcolsep - \arrayrulewidth}@{}}
   }{%
-    \begin{tabular}{R{\leftcolwidth} L{\rightcolwidth}}
+    \begin{tabular}{@{}R{\leftcolwidth} | L{\rightcolwidth}@{}}
   }
 }{%
   \end{tabular}
@@ -423,7 +430,7 @@
 %%
 
 \NewDocumentEnvironment{educations}{}{%
-  \begin{tabular}{R{\leftcolwidth} | L{\rightcolwidth}}
+  \begin{tabular}{@{}R{\leftcolwidth} | L{\rightcolwidth}@{}}
 }{%
   \end{tabular}
 }
@@ -450,7 +457,7 @@
 %%
 
 \NewDocumentEnvironment{projects}{}{%
-  \begin{longtable}{R{\leftcolwidth} | L{\rightcolwidth}}
+  \begin{longtable}{@{}R{\leftcolwidth} | L{\rightcolwidth}@{}}
 }{%
   \end{longtable}
 }
@@ -484,7 +491,7 @@
 %%
 
 \NewDocumentEnvironment{experiences}{}{%
-  \begin{longtable}{R{\leftcolwidth} | L{\rightcolwidth}}
+  \begin{longtable}{@{}R{\leftcolwidth} | L{\rightcolwidth}@{}}
 }{%
   \end{longtable}
 }
@@ -527,7 +534,7 @@
 %%
 
 \NewDocumentEnvironment{skills}{}{%
-  \begin{tabular}{R{\leftcolwidth} L{\rightcolwidth}}
+  \begin{tabular}{@{}R{\leftcolwidth} L{\rightcolwidth}@{}}
 }{%
   \end{tabular}
 }
