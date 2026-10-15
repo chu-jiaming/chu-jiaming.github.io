@@ -1,165 +1,149 @@
-%-------------------------------------------------------------------------------
-% 褚嘉明 — 中文单页简历（AI / 研究实习）
-%
-% 与 resume.tex（英文版）共用同一套版式与宏，便于两版同步维护。
-% 中文排版基于 ctex 宏集；中文用苹方（macOS 自带），找不到时自动回退到
-% TeX Live 自带的 Fandol 黑体，因此在 Overleaf / Linux 上也能直接编译。
-%
-% 编译：latexmk -xelatex -outdir=build resume-zh.tex
-% 标有 "% TODO" 的行需要补充或删除。
-%-------------------------------------------------------------------------------
-\documentclass[a4paper,fontset=none]{ctexart}
+%%
+%% 褚嘉明 — 中文简历
+%% 模板：resume.cls（Weitian LI, LPPL 1.3c，基于 YAAC: Another Awesome CV）
+%% 内容：CC BY 4.0
+%%
+%% 编译：latexmk resume-zh.tex   （cv/.latexmkrc 已设为 XeLaTeX，输出到 build/）
+%% 手机号不进 git：写在 cv/private.tex 里，内容为 \def\myphone{xxx-xxxx-xxxx}
+%%
+\documentclass[zh]{resume}
 
-\usepackage[sfdefault]{FiraSans}       % 英文/数字字体，与英文版一致
-\IfFontExistsTF{PingFang SC}{%
-  \setCJKmainfont{PingFang SC}[BoldFont={PingFang SC Semibold}]
-  \setCJKsansfont{PingFang SC}[BoldFont={PingFang SC Semibold}]
-}{%
-  \setCJKmainfont{FandolHei-Regular.otf}[BoldFont=FandolHei-Bold.otf]
-  \setCJKsansfont{FandolHei-Regular.otf}[BoldFont=FandolHei-Bold.otf]
+\iconsize{\Large}
+\fileinfo{\faEdit{} \today}
+
+\name{嘉明}{褚}
+\keywords{生成模型, 三维重建, 世界模型, NeRF}
+
+\profile{
+  \privatemobile
+  \email{jiaming.chu@sjtu.edu.cn}
+  \github{chu-jiaming}
+  \\
+  \homepage{chu-jiaming.github.io}
+  \university{上海交通大学 \textbullet{} 电子信息硕士}
 }
-\setCJKmonofont{FandolHei-Regular.otf}
 
-\usepackage[margin=0.6in,top=0.5in,bottom=0.5in]{geometry}
-\usepackage{enumitem}
-\usepackage{tabularx}
-\usepackage{xcolor}
-\usepackage{fontawesome5}
-\usepackage{graphicx}
-\usepackage[hidelinks]{hyperref}
-
-\definecolor{accent}{HTML}{1F4E79}
-\definecolor{subtle}{HTML}{555555}
-\hypersetup{colorlinks=true,urlcolor=accent,linkcolor=accent}
-
-\pagestyle{empty}
-\setlength{\parindent}{0pt}
-\setlength{\tabcolsep}{0pt}
-\linespread{1.15}
-\raggedright
-
-%---------------- 章节标题 ----------------
-\renewcommand{\section}[1]{%
-  \par\vspace{7pt}{\large\bfseries\color{accent}#1}\par\nobreak\vspace{-3pt}%
-  {\color{accent}\rule{\linewidth}{0.6pt}}\par\nobreak\vspace{1pt}}
-
-%---------------- 条目宏（中文不用斜体，改用灰色） ----------------
-% \entry{标题}{右侧时间}{副标题}{右侧地点}
-\newcommand{\entry}[4]{%
-  \begin{tabularx}{\linewidth}{@{}X r@{}}
-    \textbf{#1} & #2 \\
-    \textcolor{subtle}{\small #3} & \textcolor{subtle}{\small #4} \\
-  \end{tabularx}\vspace{-3pt}}
-
-% \project{标题}{链接}{时间}
-\newcommand{\project}[3]{%
-  \begin{tabularx}{\linewidth}{@{}X r@{}}
-    \textbf{#1}\ \ {\small #2} & #3 \\
-  \end{tabularx}\vspace{-3pt}}
-
-% \pub{作者}{题目}{会议/期刊}{链接}
-\newcommand{\pub}[4]{\item #1. \textbf{#2}. \textit{#3}. {\small #4}}
-
-\newcommand{\me}{\underline{Jiaming Chu}}
-\newcommand{\sep}{\ \textbar\ }
-
-\setlist[itemize]{leftmargin=1.2em,itemsep=1pt,topsep=2pt,parsep=0pt,label=\small$\bullet$}
-
-%===============================================================================
 \begin{document}
+\makeheader
 
-%---------------- 个人信息 ----------------
-% 如需证件照：取消下面一段注释，并把照片放到 cv/photo.jpg
-% \begin{minipage}[c]{0.82\linewidth}
-\begin{center}
-  {\Huge\bfseries 褚嘉明}\\[5pt]
-  \small
-  \faEnvelope\ \href{mailto:jiaming.chu@sjtu.edu.cn}{jiaming.chu@sjtu.edu.cn}\quad
-  \faGlobe\ \href{https://chu-jiaming.github.io}{chu-jiaming.github.io}\quad
-  \faGithub\ \href{https://github.com/chu-jiaming}{github.com/chu-jiaming}\quad
-  \faPhone\ 000-0000-0000 % TODO: 手机号
-\end{center}
-% \end{minipage}\hfill
-% \begin{minipage}[c]{0.15\linewidth}
-%   \includegraphics[width=\linewidth]{photo.jpg}
-% \end{minipage}
-\vspace{-6pt}
+%======================================================================
+% 个人简介
+%======================================================================
+{\hspace{2em}%
+上海交通大学电子信息专业硕士研究生，研究方向为\emph{生成模型、三维重建与世界模型}，
+关注辐射场在相机位姿等输入不完美时的鲁棒性及其评测方法。本科阶段有丰富的机器人与视觉项目经历，
+正在寻找相关方向的研究实习。
+\par}
 
-%---------------- 求职意向 ----------------
-\section{求职意向}
-算法研究实习生 —— 生成模型 / 三维重建 / 世界模型 \hfill 可实习时间：TODO % TODO: 到岗时间与时长，如“每周 4 天，6 个月”
+%======================================================================
+\sectionTitle{教育背景}{\faGraduationCap}
+%======================================================================
+\begin{educations}
+  \education%
+    {2025.09}%
+    {上海交通大学}%
+    {自动化与感知学院}%
+    {电子信息}%
+    {硕士}
+  \separator{0.5ex}
+  \education%
+    {2021.09}%
+    [2025.07]%
+    {哈尔滨工业大学}%
+    {仪器科学与工程学院}%
+    {智能感知工程}%
+    {本科（GPA 88.25/100）}
+\end{educations}
 
-%---------------- 教育背景 ----------------
-\section{教育背景}
-\entry{上海交通大学}{2025.09 -- 至今}
-      {电子信息\ 硕士研究生}{上海}
+%======================================================================
+\sectionTitle{科研项目}{\faFlask}
+%======================================================================
+\begin{experiences}
+  \experience%
+    {2026}%
+    {\textbf{PoseGuard-NeRF：联合相机位姿优化何时帮助 NeRF？} \hfill
+     \link{https://chu-jiaming.github.io/poseguard-nerf/}{主页} \textbullet{}
+     \link{https://github.com/chu-jiaming/PoseGuard-NeRF}{代码}}%
+    [\begin{itemize}
+      \item 设计 \emph{45 组} vanilla NeRF 对照实验（9 种位姿噪声 $\times$ 5 种方法），
+        分析联合位姿优化在何种条件下提升或损害重建质量
+      \item 相机学习率 warm-up 可恢复噪声位姿带来的大部分损失：5\% 平移噪声下
+        PSNR 由 14.1 提升至 \emph{22.7\,dB}
+      \item 从真实位姿出发开启位姿优化反而使 PSNR 由 27.1 降至 17.9\,dB；仅在训练相机上拟合
+        Sim(3) 对齐即可恢复 \emph{+5.5\,dB}，说明下降源于全局坐标漂移而非重建变差
+      \item 开源发布 v1.0.0，提供可复现配置、GitHub Actions CI 与 uv 环境管理
+    \end{itemize}]
+\end{experiences}
+
+%======================================================================
+\sectionTitle{实践经历}{\faBriefcase}
+%======================================================================
+\begin{experiences}
+  \experience%
+    [2023.01]%
+    {2023.07}%
+    {\textbf{智能车开发（队长）} @ 哈尔滨工业大学智能车创新俱乐部}%
+    [\begin{itemize}
+      \item 负责计算机视觉技术支持，参与 ROS 包构建与导航参数调试，撰写技术文档
+      \item 技术栈涵盖计算机视觉、SLAM、路径规划、单片机编程与机械结构分析
+    \end{itemize}]
+  \separator{0.5ex}
+  \experience%
+    [2023.11]%
+    {2024.04}%
+    {\textbf{仪器设计} @ 哈尔滨工业大学超精密光电仪器工程研究所}%
+    [\begin{itemize}
+      \item 参与\enquote{单光束三自由度超精密激光干涉仪}设计，实现仪器与上位机通信及测量数据可视化；该作品获传感器创新大赛全国二等奖
+    \end{itemize}]
+  \separator{0.5ex}
+  \experience%
+    [2023.12]%
+    {2024.01}%
+    {\textbf{数学建模（队长）}}%
+    [\begin{itemize}
+      \item 负责模型建立、代码编写与论文撰写；学习数据处理、科研绘图与科研写作
+    \end{itemize}]
+  % [精简] 与目标方向关联较弱，需要时取消注释
+  % \separator{0.5ex}
+  % \experience%
+  %   [2024.03]%
+  %   {2024.04}%
+  %   {\textbf{智能视觉技术培训} @ 讯技光电科技有限公司}%
+  %   [\begin{itemize}
+  %     \item 学习智能视觉和机器学习等相关知识
+  %   \end{itemize}]
+\end{experiences}
+
+%======================================================================
+\sectionTitle{其他项目}{\faCode}
+%======================================================================
 \begin{itemize}
-  \item 导师：TODO \sep GPA：TODO % TODO: 补充或删除本行
+  \item \link{https://github.com/chu-jiaming/qingzhou}{轻舟机器人开发}
+    （C/C++, Python, Jetson Nano, STM32）：实现 SLAM、导航避障、视觉识别与上位机通信
+  \item 基于树莓派的二维码与手势识别控制小车（Python, Raspberry Pi）：摄像头识别二维码和手势控制小车运动
+  \item 基于树莓派的智能家居系统（Python, Raspberry Pi）：环境数据实时测量、记录、显示与设备射频控制
+  % [精简] 以下两项与目标方向关联较弱，需要时取消注释
+  % \item 基于 MPU6050 的手势控制小车（C, STC89C51）：使用手势控制小车前进、转向
+  % \item 仪器大电流电源模块设计（Altium Designer, MPS）：设计精密仪器使用的大电流电源模块 PCB
 \end{itemize}
 
-\vspace{3pt}
-\entry{哈尔滨工业大学}{2021.09 -- 2025.06} % TODO: 核对入学时间
-      {智能感知工程\ 工学学士}{哈尔滨}
+%======================================================================
+\sectionTitle{竞赛获奖}{\faTrophy}
+%======================================================================
 \begin{itemize}
-  \item GPA：TODO \sep 专业排名：TODO % TODO: 补充或删除本行
+  \item 第七届中国（国际）传感器创新大赛\emph{全国二等奖} \hfill 2023
+  \item 第十八届全国大学生智能汽车竞赛航天智慧物流线下选拔赛\emph{二等奖} \hfill 2023
+  \item 美国大学生数学建模竞赛（ICM）\emph{H 奖} \hfill 2024
 \end{itemize}
 
-%---------------- 研究方向 ----------------
-\section{研究方向}
-生成模型、三维重建（NeRF / 3D Gaussian Splatting）与世界模型；关注辐射场在相机位姿等输入不完美时的鲁棒性，
-以及让评测指标真正度量其所声称内容的评测方法。
-
-%---------------- 论文发表 ----------------
-% 有论文 / 预印本后取消注释；\me 会给自己的名字加下划线。
-% \section{论文发表}
-% \begin{itemize}
-%   \pub{\me, A. Coauthor, B. Advisor}{Paper Title}{Conference 2027}
-%       {[\href{https://arxiv.org/abs/xxxx}{arXiv}] [\href{https://github.com/}{code}]}
-% \end{itemize}
-
-%---------------- 科研项目 ----------------
-\section{科研项目}
-\project{PoseGuard-NeRF：联合相机位姿优化何时帮助 NeRF，何时只是移动了世界？}
-  {[\href{https://chu-jiaming.github.io/poseguard-nerf/}{主页}]
-   [\href{https://github.com/chu-jiaming/PoseGuard-NeRF}{代码}]}
-  {2026}
-\begin{itemize}
-  \item 设计对照实验，共 \textbf{45 组 vanilla NeRF 训练}（9 种位姿噪声水平 $\times$ 5 种方法），
-        系统分析联合相机位姿优化在何种条件下提升或损害重建质量。
-  \item 发现相机学习率 warm-up 可恢复噪声位姿造成的大部分质量损失：
-        5\% 平移噪声下 PSNR 由 \textbf{14.1 提升至 22.7\,dB}。
-  \item 发现从真实位姿出发开启位姿优化反而使 PSNR 由 27.1 降至 17.9\,dB；仅在训练相机上拟合
-        Sim(3) 对齐即可恢复 \textbf{+5.5\,dB}，说明下降源于全局坐标系漂移而非重建本身变差。
-  \item 发布 v1.0.0，提供可复现配置、GitHub Actions 持续集成与 \texttt{uv} 环境管理。
-\end{itemize}
-
-% TODO: 再补充 1--2 个项目（本科毕设、课程项目等）
-% \project{项目名称}{[\href{https://github.com/}{代码}]}{2025}
-% \begin{itemize}
-%   \item 做了什么 + 用了什么方法 + 量化结果。
-% \end{itemize}
-
-%---------------- 实习经历 ----------------
-% \section{实习经历}
-% \entry{公司 / 实验室}{2026.06 -- 至今}{算法实习生，团队名称}{城市}
-% \begin{itemize}
-%   \item 动词开头 + 做了什么 + 怎么做 + 可量化的结果。
-% \end{itemize}
-
-%---------------- 荣誉奖项 ----------------
-% \section{荣誉奖项}
-% \begin{itemize}
-%   \item 奖学金 / 竞赛奖项 \hfill 2024  % TODO
-% \end{itemize}
-
-%---------------- 专业技能 ----------------
-\section{专业技能}
-\begin{tabularx}{\linewidth}{@{}l@{\hspace{1.2em}}X@{}}
-  \textbf{深度学习与视觉} & PyTorch, OpenCV, NumPy, NeRF \\
-  \textbf{编程语言}       & Python, C/C++, MATLAB \\
-  \textbf{系统}           & Linux, ROS \\
-  \textbf{开发工具}       & Git, GitHub Actions (CI), uv, Conda, LaTeX \\
-  \textbf{语言能力}       & 英语 TODO（CET-6 / IELTS 成绩） \\
-\end{tabularx}
+%======================================================================
+\sectionTitle{技能和语言}{\faWrench}
+%======================================================================
+\begin{competences}
+  \comptence{\icon{\faCube}深度学习}{PyTorch, NeRF, OpenCV, NumPy}
+  \comptence{\icon{\faLaptopCode}编程}{Python, C/C++, MATLAB, Verilog}
+  \comptence{\icon{\faCog}工具}{Linux, ROS, Git, GitHub Actions, uv, Conda, Docker, \LaTeX, SolidWorks, Altium Designer}
+  \comptence{\icon{\faLanguage}语言}{\emph{英语} --- 优良，\emph{中文} --- 母语}
+\end{competences}
 
 \end{document}

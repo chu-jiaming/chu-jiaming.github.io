@@ -1,0 +1,147 @@
+%%
+%% Jiaming Chu — Resume (English)
+%% Template: resume.cls (Weitian LI, LPPL 1.3c; based on YAAC: Another Awesome CV)
+%% Content: CC BY 4.0
+%%
+%% Build: latexmk resume-en.tex   (cv/.latexmkrc selects XeLaTeX, output in build/)
+%% The phone number stays out of git: put \def\myphone{+86 xxx-xxxx-xxxx} in cv/private.tex
+%%
+\documentclass{resume}
+
+\iconsize{\Large}
+\fileinfo{\faEdit{} \today}
+
+\name{Jiaming}{Chu}
+\keywords{generative models, 3D reconstruction, world models, NeRF}
+
+\profile{
+  \privatemobile
+  \email{jiaming.chu@sjtu.edu.cn}
+  \github{chu-jiaming}
+  \\
+  \homepage{chu-jiaming.github.io}
+  \university{M.Eng. student, Shanghai Jiao Tong University}
+}
+
+\begin{document}
+\makeheader
+
+%======================================================================
+% Summary
+%======================================================================
+Working on \emph{generative models, 3D reconstruction and world models}, currently on how radiance
+fields behave under imperfect camera poses and how to evaluate them faithfully.
+Seeking research internships.
+
+%======================================================================
+\sectionTitle{Education}{\faGraduationCap}
+%======================================================================
+\begin{educations}
+  \education%
+    {Sep 2025}%
+    {Shanghai Jiao Tong University}%
+    {School of Automation and Intelligent Sensing}%
+    {Electronic Information}%
+    {M.Eng.}
+  \separator{0.5ex}
+  \education%
+    {Sep 2021}%
+    [Jul 2025]%
+    {Harbin Institute of Technology}%
+    {School of Instrumentation Science and Engineering}%
+    {IntelliSense Engineering}%
+    {B.Eng.\ (GPA 88.25/100)}
+\end{educations}
+
+%======================================================================
+\sectionTitle{Research}{\faFlask}
+%======================================================================
+\begin{experiences}
+  \experience%
+    {2026}%
+    {\textbf{PoseGuard-NeRF: When Does Joint Camera-Pose Optimization Help NeRF?} \hfill
+     \link{https://chu-jiaming.github.io/poseguard-nerf/}{page} \textbullet{}
+     \link{https://github.com/chu-jiaming/PoseGuard-NeRF}{code}}%
+    [\begin{itemize}
+      \item Controlled study of \emph{45 vanilla-NeRF runs} (9 pose-noise levels $\times$ 5 methods)
+        on when joint pose optimization helps or hurts.
+      \item A camera learning-rate warm-up recovers most of the loss from noisy poses:
+        14.1 $\rightarrow$ \emph{22.7\,dB} PSNR at 5\% translation noise.
+      \item From perfect poses it drops PSNR 27.1 $\rightarrow$ 17.9\,dB, yet a Sim(3) fit on training
+        cameras recovers \emph{+5.5\,dB}: global drift, not a worse reconstruction.
+      \item Released v1.0.0 with reproducible configs, GitHub Actions CI and uv environments.
+    \end{itemize}]
+\end{experiences}
+
+%======================================================================
+\sectionTitle{Experience}{\faBriefcase}
+%======================================================================
+\begin{experiences}
+  \experience%
+    [Jan 2023]%
+    {Jul 2023}%
+    {\textbf{Captain, Team Lilac 12} @ HIT Smartcar \& Innovation Club}%
+    [\begin{itemize}
+      \item Led vision support; built ROS packages, tuned navigation (SLAM, path planning) and wrote docs.
+    \end{itemize}]
+  \separator{0.5ex}
+  \experience%
+    [Nov 2023]%
+    {Apr 2024}%
+    {\textbf{Team Member} @ HIT Center of Ultra-Precision Optoelectronic Instrument Engineering}%
+    [\begin{itemize}
+      \item Single-beam 3-DoF ultra-precision laser interferometer: host communication and data
+        visualization; the entry won a national second prize (see Awards).
+    \end{itemize}]
+  \separator{0.5ex}
+  \experience%
+    [Dec 2023]%
+    {Jan 2024}%
+    {\textbf{Mathematical Modeling (Team Lead)}}%
+    [\begin{itemize}
+      \item Built the models, wrote the code and the paper; won an ICM Honorable Mention.
+    \end{itemize}]
+  % [trimmed] weakly related to the target roles; uncomment if needed
+  % \separator{0.5ex}
+  % \experience%
+  %   [Mar 2024]%
+  %   {Apr 2024}%
+  %   {\textbf{Visiting Student} @ Shanghai Infocrops Science \& Technology Co., Ltd.}%
+  %   [\begin{itemize}
+  %     \item Intelligent vision training.
+  %   \end{itemize}]
+\end{experiences}
+
+%======================================================================
+\sectionTitle{Other Projects}{\faCode}
+%======================================================================
+\begin{itemize}
+  \item \link{https://github.com/chu-jiaming/qingzhou}{Qingzhou robot}
+    (C/C++, Python, Jetson Nano, STM32): SLAM, navigation, visual recognition.
+  \item Vision-controlled car (Python, Raspberry Pi): drives by recognizing QR codes and hand gestures.
+  \item Smart-home system (Python, Raspberry Pi): real-time sensing, logging, display and RF device control.
+  % [trimmed] weakly related to the target roles; uncomment if needed
+  % \item Gesture-controlled car (C, STC89C51) using an MPU6050 IMU.
+  % \item High-current power module PCB for precision instruments (Altium Designer, MPS).
+\end{itemize}
+
+%======================================================================
+\sectionTitle{Honors \& Awards}{\faTrophy}
+%======================================================================
+\begin{itemize}
+  \item \emph{Second National Prize}, 7th China (International) Sensor Innovation Contest \hfill 2023
+  \item \emph{Provincial Second Prize}, National University Students Intelligent Car Race \hfill 2023
+  \item \emph{Honorable Mention}, Interdisciplinary Contest in Modeling (ICM), COMAP \hfill 2024
+\end{itemize}
+
+%======================================================================
+\sectionTitle{Skills \& Languages}{\faWrench}
+%======================================================================
+\begin{competences}[9.6em]
+  \comptence{\icon{\faCube}Deep Learning}{PyTorch, NeRF, OpenCV, NumPy}
+  \comptence{\icon{\faLaptopCode}Programming}{Python, C/C++, MATLAB, Verilog}
+  \comptence{\icon{\faCog}Tools}{Linux, ROS, Git, GitHub Actions, uv, Conda, Docker, \LaTeX, SolidWorks, Altium Designer}
+  \comptence{\icon{\faLanguage}Languages}{\emph{Chinese} --- native, \emph{English} --- proficient}
+\end{competences}
+
+\end{document}
