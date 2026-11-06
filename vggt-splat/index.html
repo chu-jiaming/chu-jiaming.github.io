@@ -1,0 +1,238 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>VGGT-Splat</title>
+
+    <meta name="author" content="Jiaming Chu">
+    <meta name="description" content="Feed-forward VGGT poses versus COLMAP for 3D Gaussian Splatting: a controlled comparison on 6 scenes with 8, 16, 32 and all training frames, with and without a VGGT depth prior.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="VGGT-Splat">
+    <meta property="og:description" content="How many frames does a casual capture need, and when do feed-forward VGGT poses beat COLMAP for 3D Gaussian Splatting?">
+    <meta property="og:image" content="https://chu-jiaming.github.io/vggt-splat/assets/social_preview.png">
+    <meta property="og:url" content="https://chu-jiaming.github.io/vggt-splat/">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="stylesheet" type="text/css" href="../stylesheet.css">
+
+    <style>
+      .page { max-width: 800px; margin: 0 auto; padding: 0 16px 40px; }
+      .title { font-size: 30px; text-align: center; margin: 36px 0 8px; line-height: 1.25; }
+      .title strong { font-size: inherit; }
+      .subtitle { font-size: 18px; text-align: center; color: #555; margin: 0 0 12px; font-style: italic; }
+      .authors { text-align: center; font-size: 16px; margin: 0 0 4px; }
+      .venue { text-align: center; color: #555; margin: 0 0 18px; }
+      .buttons { text-align: center; margin-bottom: 28px; }
+      .buttons a { display: inline-block; margin: 4px; padding: 7px 16px; border-radius: 18px; background: #333; color: #fff; font-size: 14px; }
+      .buttons a:hover { background: #f09228; color: #fff; }
+      h2 { margin-top: 36px; margin-bottom: 8px; }
+      p, li { line-height: 1.55; }
+      figure { margin: 18px 0; text-align: center; }
+      figure img, figure video { max-width: 100%; height: auto; }
+      figcaption { font-size: 13px; color: #555; margin-top: 6px; text-align: left; }
+      .tldr { background: #ffffd0; border-radius: 10px; padding: 14px 20px; }
+      .tldr li { margin: 6px 0; }
+      .table-wrap { overflow-x: auto; }
+      table.results { border-collapse: collapse; margin: 12px auto; font-size: 14px; }
+      table.results th, table.results td { padding: 4px 10px; border-bottom: 1px solid #ddd; }
+      table.results td.num, table.results th.num { text-align: right; font-variant-numeric: tabular-nums; }
+      table.results td.fail { text-align: right; color: #b33; }
+      table.results tr.scene-first td { border-top: 2px solid #bbb; }
+      table.results small { color: #777; }
+      .videos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .videos figure { margin: 0; }
+      @media (max-width: 640px) { .videos { grid-template-columns: 1fr; } }
+      pre { background: #f5f5f5; padding: 12px 14px; border-radius: 8px; overflow-x: auto; font-size: 13px; }
+      .footer { text-align: right; font-size: small; margin-top: 36px; }
+    </style>
+  </head>
+
+  <body>
+    <div class="page">
+
+      <p class="title"><strong>VGGT-Splat</strong></p>
+      <p class="subtitle">Feed-forward VGGT poses vs. COLMAP for 3D Gaussian Splatting,<br>from 8 frames to all</p>
+      <p class="authors"><a href="../">Jiaming Chu</a></p>
+      <p class="venue">Independent research project, 2026</p>
+
+      <div class="buttons">
+        <a href="https://github.com/chu-jiaming/VGGT-Splat">Code</a>
+        <a href="https://github.com/chu-jiaming/VGGT-Splat#reproducing">Reproduce</a>
+      </div>
+
+      <figure>
+        <video width="100%" muted autoplay loop playsinline poster="assets/garden_compare.jpg">
+          <source src="assets/garden_compare.mp4" type="video/mp4">
+        </video>
+        <figcaption>Mip-NeRF 360 garden, all 161 training frames, 3DGS trained for 7k steps. Left: COLMAP poses (26.3 dB test PSNR, 770 s for pose estimation). Right: VGGT poses from one forward pass (21.8 dB, 68 s). With many frames COLMAP is sharper; with 8 or 16 frames it usually fails, and VGGT does not.</figcaption>
+      </figure>
+
+      <div class="tldr">
+        <strong>TL;DR</strong>
+        <ul>
+          <li><strong>Few frames: VGGT is reliable, COLMAP is not.</strong> At 8 frames COLMAP fails on 4 of 6 scenes; at 16 it fails on 3 and registers only 3/16 or 7/16 frames on two more. VGGT never fails. The crossover is around 16&ndash;32 frames.</li>
+          <li><strong>All frames: COLMAP wins by 2.1&ndash;4.6 dB on five of six scenes, and the gap is precision, not coverage.</strong> On test pixels that the training views do see, VGGT is still behind (garden 21.7 vs. 26.3 dB). VGGT is 3.5&ndash;13&times; faster at estimating poses.</li>
+          <li><strong>A VGGT depth prior changes the geometry but not the novel views.</strong> Across seed repeats, only two of the differences exceed noise (&minus;0.68 dB and +0.17 dB). With few frames the bottleneck is regions no training view sees, and a prior on training views cannot reach them.</li>
+        </ul>
+      </div>
+
+      <h2>Question</h2>
+      <p>
+        <a href="https://github.com/facebookresearch/vggt">VGGT</a> predicts camera poses, a point cloud and per-frame depth for a set of images in a single forward pass, so it can replace COLMAP as the front end of 3D Gaussian Splatting. For a casual phone capture, two practical questions follow: <em>how many frames</em> does each pipeline need before it works, and with few frames, does <em>supervising 3DGS with VGGT's depth</em> recover the missing quality?
+      </p>
+
+      <h2>Setup</h2>
+      <p>
+        <strong>6 scenes</strong>: three self-captured phone videos (desk, lawn, room; 1080p, sampled at 3 fps, trained at 960&times;540) and three Mip-NeRF 360 scenes (garden, bicycle, counter). Each scene has a fixed test set (every 8th frame) and nested training sets of <strong>N = 8 / 16 / 32 / all</strong> frames. <strong>3 methods</strong> share the same gsplat trainer with per-camera pose refinement, stopped at 7k steps:
+      </p>
+      <ul>
+        <li><strong>COLMAP</strong>: COLMAP 4.2.1 with exhaustive matching, sparse points as initialization.</li>
+        <li><strong>VGGT</strong>: VGGT-1B poses and its most confident points as initialization.</li>
+        <li><strong>VGGT + depth</strong>: the same, plus a Pearson loss between rendered inverse depth and VGGT depth (&lambda; = 0.2).</li>
+      </ul>
+      <p>
+        Evaluation follows the protocol used for pose-free methods. Test cameras come from a joint run on training and test frames, are mapped into the trained model's frame by a Sim(3) fitted on the shared training cameras, and are refined for 500 steps with the Gaussians frozen. Methods are compared on the test frames they all registered. Re-running a configuration with different seeds moves PSNR by 0.06&ndash;0.35 dB (standard deviation), so differences below about 0.3 dB are treated as noise.
+      </p>
+
+      <h2>Finding 1: with few frames, COLMAP fails and VGGT does not</h2>
+      <p>
+        COLMAP needs enough overlap between views to match features and register cameras. With 8 frames it fails outright on desk, room, bicycle and counter, and registers 3/8 and 6/8 frames on lawn and garden. With 16 frames it still fails on lawn, room and counter. Even at 32 frames it registers only 10/32 frames on bicycle and 15/32 on desk, which is why its PSNR there is lower than at 16. VGGT returns a pose for every frame in every configuration.
+      </p>
+      <figure>
+        <img src="assets/fail_colmap_few.jpg" alt="Bicycle with 16 training frames: COLMAP registers 3 and the render is mostly floaters; VGGT reconstructs the bicycle and bench">
+        <figcaption>Bicycle, 16 training frames, one test view. COLMAP registers only 3 training frames; the render is dominated by floaters and empty space. VGGT uses all 16. PSNR values are for this view.</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/curves.png" alt="Test PSNR, SSIM and LPIPS versus number of training frames for six scenes and three methods">
+        <figcaption>Test quality vs. training frames, on the test frames that every usable method registered (counts under each axis). Missing COLMAP points are failed runs. Room at 32 frames is excluded because COLMAP's two reconstructions (training-only and joint) disagree by 13% of the trajectory scale.</figcaption>
+      </figure>
+
+      <h2>Finding 2: with all frames, VGGT is less precise</h2>
+      <p>
+        With every frame available, COLMAP leads by 2.1&ndash;4.6 dB on five scenes and by 0.7 dB on desk. To check whether this comes from VGGT covering less of the scene, I split each test image into pixels seen by at least one training view and pixels seen by none. On the seen pixels alone VGGT is still behind: garden 21.7 vs. 26.3 dB, bicycle 20.7 vs. 22.8, counter 24.9 vs. 27.2. The renders are smeared rather than incomplete. On lawn, garden and bicycle, VGGT's PSNR rises from 32 frames to all frames while LPIPS gets worse, the signature of blur. This is consistent with feed-forward poses that are not mutually consistent enough for 3DGS to resolve fine detail; bundle adjustment is.
+      </p>
+      <figure>
+        <img src="assets/fail_precision.jpg" alt="Garden with all frames: both methods see almost the whole test view, but VGGT's render has higher error everywhere in the background">
+        <figcaption>Garden, all frames. Both coverage maps are almost entirely green, yet VGGT's error is higher across the background.</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/garden_zoom.jpg" alt="Zoomed crops of the garden background: ground truth, COLMAP render and VGGT render">
+        <figcaption>Crop of the same view. The brick wall, windows and slide are seen by many training views, but VGGT's render cannot resolve them.</figcaption>
+      </figure>
+      <p>
+        VGGT's advantage at this end is speed: it estimates poses for all frames in 47&ndash;73 s, while COLMAP takes 167&ndash;790 s on the same GPU.
+      </p>
+      <div class="table-wrap">
+      <table class="results">
+        <thead><tr><th style="text-align:left">Pose estimation, all frames</th><th class="num">desk</th><th class="num">lawn</th><th class="num">room</th><th class="num">garden</th><th class="num">bicycle</th><th class="num">counter</th></tr></thead>
+        <tbody>
+          <tr><td>Frames</td><td class="num">110</td><td class="num">156</td><td class="num">114</td><td class="num">161</td><td class="num">166</td><td class="num">180</td></tr>
+          <tr><td>COLMAP (s)</td><td class="num">167</td><td class="num">790</td><td class="num">505</td><td class="num">770</td><td class="num">380</td><td class="num">480</td></tr>
+          <tr><td>VGGT (s)</td><td class="num">47</td><td class="num">60</td><td class="num">49</td><td class="num">68</td><td class="num">68</td><td class="num">73</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h2>Finding 3: with few frames, the bottleneck is coverage</h2>
+      <p>
+        With 8 frames, large parts of each test view were never seen by any training view. Those pixels are 0.5&ndash;9 dB worse than the seen ones, and the fraction of unseen pixels in a test frame is strongly anti-correlated with that frame's PSNR. Poses are not the problem here: VGGT's poses are good enough that seen regions render well.
+      </p>
+      <figure>
+        <img src="assets/fail_coverage.jpg" alt="Desk with 8 versus 32 training frames: with 8 frames the regions around the box that no training view saw are blurred">
+        <figcaption>Desk, one test view, VGGT with 8 vs. 32 training frames. With 8 frames the floor and background that no training view saw (red in the coverage map) are where the error is.</figcaption>
+      </figure>
+
+      <h2>Finding 4: a depth prior changes the geometry, not the novel views</h2>
+      <p>
+        The depth loss does what it is designed to do: on training views, the local correlation between rendered depth and VGGT depth rises from 0.4&ndash;0.8 to 0.7&ndash;0.9. But novel-view PSNR barely moves. After repeating the relevant configurations with three seeds, only two differences exceed noise: desk at 32 frames gets 0.68 dB worse and lawn at 8 frames gets 0.17 dB better. Finding 3 explains why. The prior constrains surfaces the training views already see, while the error is concentrated in regions they do not.
+      </p>
+      <figure>
+        <img src="assets/fail_depth.jpg" alt="Desk with 32 frames, with and without the depth prior: the difference is in the reflective floor at the lower left">
+        <figcaption>Desk, 32 frames, with and without the depth prior. Over all test frames, the two match on seen pixels (31.2 vs. 31.3 dB) and differ on unseen ones (20.3 vs. 23.0 dB). In this view the difference sits on the reflective floor at the lower left. This view shows <em>where</em> the loss occurs, not its size.</figcaption>
+      </figure>
+
+      <h2>More scenes</h2>
+      <p>
+        Fly-throughs along the training camera path, all frames, COLMAP on the left and VGGT on the right. Lawn and room are shown with VGGT only: COLMAP registered fewer frames there (149/156 and 75/114), so its camera path differs and a side-by-side would not compare the same views.
+      </p>
+      <div class="videos">
+        <figure>
+          <video width="100%" muted autoplay loop playsinline preload="metadata" poster="assets/bicycle_compare.jpg"><source src="assets/bicycle_compare.mp4" type="video/mp4"></video>
+          <figcaption>Bicycle: 23.4 vs. 21.3 dB.</figcaption>
+        </figure>
+        <figure>
+          <video width="100%" muted autoplay loop playsinline preload="metadata" poster="assets/counter_compare.jpg"><source src="assets/counter_compare.mp4" type="video/mp4"></video>
+          <figcaption>Counter: 27.3 vs. 25.0 dB.</figcaption>
+        </figure>
+        <figure>
+          <video width="100%" muted autoplay loop playsinline preload="metadata" poster="assets/desk_compare.jpg"><source src="assets/desk_compare.mp4" type="video/mp4"></video>
+          <figcaption>Desk (self-captured): 32.5 vs. 31.8 dB.</figcaption>
+        </figure>
+        <figure>
+          <video width="100%" muted autoplay loop playsinline preload="metadata" poster="assets/lawn_vggt.jpg"><source src="assets/lawn_vggt.mp4" type="video/mp4"></video>
+          <figcaption>Lawn (self-captured), VGGT: 19.4 dB (COLMAP 21.4 dB).</figcaption>
+        </figure>
+        <figure>
+          <video width="100%" muted autoplay loop playsinline preload="metadata" poster="assets/room_vggt.jpg"><source src="assets/room_vggt.mp4" type="video/mp4"></video>
+          <figcaption>Room (self-captured), VGGT: 21.2 dB (COLMAP 23.4 dB).</figcaption>
+        </figure>
+      </div>
+
+      <h2>All results</h2>
+      <p>
+        Test PSNR (dB) after test-time pose refinement, averaged over the test frames every usable method registered. Brackets give COLMAP's registered / total test frames when it did not register all of them; the other methods are averaged over the same subset. <span style="color:#b33">fail</span> = pose estimation or alignment failed, or COLMAP's two reconstructions disagree. Best per column in bold.
+      </p>
+      <div class="table-wrap">
+      <table class="results">
+        <thead><tr><th style="text-align:left">Scene</th><th style="text-align:left">Method</th><th class="num">N = 8</th><th class="num">N = 16</th><th class="num">N = 32</th><th class="num">All</th></tr></thead>
+        <tbody>
+          <tr class="scene-first"><td>desk</td><td>COLMAP</td><td class="fail">fail</td><td class="num">25.75 <small>(7/16)</small></td><td class="num">23.47</td><td class="num"><strong>32.46</strong></td></tr>
+          <tr><td></td><td>VGGT</td><td class="num"><strong>24.36</strong></td><td class="num"><strong>30.20</strong></td><td class="num"><strong>32.34</strong></td><td class="num">31.79</td></tr>
+          <tr><td></td><td>VGGT + depth</td><td class="num"><strong>24.36</strong></td><td class="num"><strong>30.20</strong></td><td class="num">31.79</td><td class="num">30.97</td></tr>
+          <tr class="scene-first"><td>lawn</td><td>COLMAP</td><td class="num">13.75 <small>(15/23)</small></td><td class="fail">fail</td><td class="num"><strong>18.67</strong> <small>(22/23)</small></td><td class="num"><strong>21.44</strong> <small>(22/23)</small></td></tr>
+          <tr><td></td><td>VGGT</td><td class="num"><strong>15.66</strong></td><td class="num"><strong>17.47</strong></td><td class="num">18.51</td><td class="num">19.35</td></tr>
+          <tr><td></td><td>VGGT + depth</td><td class="num">15.61</td><td class="num">17.41</td><td class="num">18.64</td><td class="num">19.39</td></tr>
+          <tr class="scene-first"><td>room</td><td>COLMAP</td><td class="fail">fail</td><td class="fail">fail</td><td class="fail">fail</td><td class="num"><strong>23.40</strong> <small>(14/17)</small></td></tr>
+          <tr><td></td><td>VGGT</td><td class="num"><strong>13.77</strong></td><td class="num"><strong>16.62</strong></td><td class="num">18.24</td><td class="num">21.20</td></tr>
+          <tr><td></td><td>VGGT + depth</td><td class="num"><strong>13.77</strong></td><td class="num">16.52</td><td class="num"><strong>18.54</strong></td><td class="num">21.64</td></tr>
+          <tr class="scene-first"><td>garden</td><td>COLMAP</td><td class="num">14.27</td><td class="num"><strong>19.57</strong></td><td class="num"><strong>23.19</strong></td><td class="num"><strong>26.34</strong></td></tr>
+          <tr><td></td><td>VGGT</td><td class="num">15.64</td><td class="num">18.13</td><td class="num">19.93</td><td class="num">21.79</td></tr>
+          <tr><td></td><td>VGGT + depth</td><td class="num"><strong>15.70</strong></td><td class="num">18.17</td><td class="num">19.99</td><td class="num">22.39</td></tr>
+          <tr class="scene-first"><td>bicycle</td><td>COLMAP</td><td class="fail">fail</td><td class="num">12.03 <small>(9/24)</small></td><td class="num">14.25</td><td class="num"><strong>23.40</strong></td></tr>
+          <tr><td></td><td>VGGT</td><td class="num">14.42</td><td class="num"><strong>16.45</strong></td><td class="num">18.26</td><td class="num">21.30</td></tr>
+          <tr><td></td><td>VGGT + depth</td><td class="num"><strong>14.46</strong></td><td class="num">16.08</td><td class="num"><strong>18.28</strong></td><td class="num">20.93</td></tr>
+          <tr class="scene-first"><td>counter</td><td>COLMAP</td><td class="fail">fail</td><td class="fail">fail</td><td class="num">21.04</td><td class="num"><strong>27.25</strong></td></tr>
+          <tr><td></td><td>VGGT</td><td class="num">14.12</td><td class="num"><strong>19.02</strong></td><td class="num">21.58</td><td class="num">25.04</td></tr>
+          <tr><td></td><td>VGGT + depth</td><td class="num"><strong>14.40</strong></td><td class="num">18.72</td><td class="num"><strong>22.44</strong></td><td class="num">24.71</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h2>Takeaway</h2>
+      <p>
+        For a casual capture of a few dozen frames, VGGT is the safer front end for 3D Gaussian Splatting: it always produces usable poses, and COLMAP often does not. Once a capture has a hundred frames or more, COLMAP's bundle adjustment gives noticeably sharper results, at 3.5&ndash;13&times; the pose-estimation time. A VGGT depth prior is not a substitute for more views: with few frames, what is missing is coverage, and only more views or priors on unseen regions can supply it.
+      </p>
+
+      <h2>Limitations</h2>
+      <p>
+        One capture per scene and, for the main grid, one seed; seed repeats cover a subset of configurations. Training stops at 7k steps for every run (on desk at 16 frames, the 30k checkpoint was slightly worse on test views, with the same ranking). The seen / unseen split uses each model's own geometry, so it is an approximation. Test cameras come from a separate joint run and are refined with the scene frozen, the standard protocol for pose-free methods but not the same as evaluating with ground-truth test poses.
+      </p>
+
+      <h2>Reproducibility</h2>
+      <p>
+        Code, the evaluation protocol, and the scripts that produce every table and figure on this page are in the <a href="https://github.com/chu-jiaming/VGGT-Splat">repository</a>, with pinned versions of gsplat, VGGT and COLMAP and the commands to rerun the full grid. The 3DGS trainer is a modified copy of gsplat's example trainer; every change is listed in <a href="https://github.com/chu-jiaming/VGGT-Splat/blob/main/trainer/NOTICE.md"><code>trainer/NOTICE.md</code></a>.
+      </p>
+
+      <h2>Citation</h2>
+<pre>@misc{chu2026vggtsplat,
+  title        = {VGGT-Splat: Feed-forward VGGT Poses vs. COLMAP for
+                  3D Gaussian Splatting, from 8 Frames to All},
+  author       = {Chu, Jiaming},
+  year         = {2026},
+  howpublished = {\url{https://github.com/chu-jiaming/VGGT-Splat}}
+}</pre>
+
+      <p class="footer"><a href="../">&larr; Jiaming Chu</a></p>
+    </div>
+  </body>
+</html>

@@ -51,6 +51,50 @@
           <table style="width:100%;border:0px;border-spacing:0px 10px;border-collapse:separate;margin-right:auto;margin-left:auto;"><tbody>
 
 
+<tr class="stack" onmouseleave="vggtsplat_stop()" onmouseenter="vggtsplat_start()">
+  <td style="padding:16px;width:20%;vertical-align:middle">
+    <div class="one">
+      <div class="two" id='vggtsplat_image'><video id='vggtsplat_video' width=100% height=100% muted loop playsinline preload="auto">
+      <source src="images/vggt_splat.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+      </video></div>
+      <img src='images/vggt_splat.jpg' width="160" alt="Mip-NeRF 360 garden reconstructed with 3D Gaussian Splatting from VGGT poses; on hover, a fly-through">
+    </div>
+    <script type="text/javascript">
+      function vggtsplat_start() {
+        var v = document.getElementById('vggtsplat_video');
+        v.currentTime = 0;
+        var p = v.play();
+        if (p) p.catch(function() {});
+        document.getElementById('vggtsplat_image').style.opacity = "1";
+      }
+
+      function vggtsplat_stop() {
+        document.getElementById('vggtsplat_video').pause();
+        document.getElementById('vggtsplat_image').style.opacity = "0";
+      }
+      vggtsplat_stop()
+    </script>
+  </td>
+  <td style="padding:8px;width:80%;vertical-align:middle">
+    <a href="vggt-splat/">
+      <span class="papertitle">VGGT-Splat: Feed-forward VGGT Poses vs. COLMAP for 3D Gaussian Splatting, from 8 Frames to All</span>
+    </a>
+    <br>
+    <strong>Jiaming Chu</strong>
+    <br>
+    <em>Independent research project</em>, 2026
+    <br>
+    <a href="vggt-splat/">project page</a>
+    /
+    <a href="https://github.com/chu-jiaming/VGGT-Splat">code</a>
+    <p></p>
+    <p>
+    A controlled comparison on 6 scenes &times; 8 / 16 / 32 / all frames: with few frames COLMAP fails on most scenes while VGGT never does; with all frames COLMAP leads by 2.1&ndash;4.6 dB because VGGT's poses are less precise, not because it covers less. A VGGT depth prior reshapes the geometry but leaves novel views unchanged, since the few-frame bottleneck is unseen regions.
+    </p>
+  </td>
+</tr>
+
 <tr class="stack" onmouseleave="poseguard_stop()" onmouseenter="poseguard_start()" bgcolor="#ffffd0">
   <td style="padding:16px;width:20%;vertical-align:middle">
     <div class="one">
