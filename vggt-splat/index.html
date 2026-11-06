@@ -61,10 +61,10 @@
       </div>
 
       <figure>
-        <video width="100%" muted autoplay loop playsinline poster="assets/garden_compare.jpg">
-          <source src="assets/garden_compare.mp4" type="video/mp4">
+        <video width="100%" muted autoplay loop playsinline poster="assets/garden_orbit.jpg">
+          <source src="assets/garden_orbit.mp4" type="video/mp4">
         </video>
-        <figcaption>Mip-NeRF 360 garden, all 161 training frames, 3DGS trained for 7k steps. Left: COLMAP poses (26.3 dB test PSNR, 770 s for pose estimation). Right: VGGT poses from one forward pass (21.8 dB, 68 s). With many frames COLMAP is sharper; with 8 or 16 frames it usually fails, and VGGT does not.</figcaption>
+        <figcaption>Mip-NeRF 360 garden, all 161 training frames, 3DGS trained for 7k steps, both models rendered along the same novel orbit. Left: COLMAP poses (26.3 dB test PSNR, 770 s for pose estimation). Right: VGGT poses from one forward pass (21.8 dB, 68 s). With many frames COLMAP is sharper; with 8 or 16 frames it usually fails, and VGGT does not.</figcaption>
       </figure>
 
       <div class="tldr">
@@ -153,14 +153,14 @@
 
       <h2>More scenes</h2>
       <p>
-        Fly-throughs along the training camera path, all frames, COLMAP on the left and VGGT on the right. Each side follows its own method's estimated cameras, so where the two pose estimates differ the views drift apart for a moment (visible in bicycle). Lawn and room are shown with VGGT only: COLMAP registered fewer frames there (149/156 and 75/114), so its camera path differs and a side-by-side would not compare the same views.
+        All frames, COLMAP on the left and VGGT on the right. For the 360&deg; scenes (garden above, bicycle, counter) both models are rendered along one elliptical orbit around the scene center: the orbit is built from COLMAP's training cameras and mapped into the VGGT model by a Sim(3) fitted on the shared training cameras (median center error under 1% of the trajectory scale), so both sides always show the same novel view. The self-captured scenes were not filmed all the way around, so they are shown along the training camera path instead. Desk shows both methods; lawn and room show VGGT only, because COLMAP registered fewer frames there (149/156 and 75/114) and its camera path differs.
       </p>
       <figure>
-        <video width="100%" muted autoplay loop playsinline preload="metadata" poster="assets/bicycle_compare.jpg"><source src="assets/bicycle_compare.mp4" type="video/mp4"></video>
+        <video width="100%" muted autoplay loop playsinline preload="metadata" poster="assets/bicycle_orbit.jpg"><source src="assets/bicycle_orbit.mp4" type="video/mp4"></video>
         <figcaption>Bicycle: 23.4 vs. 21.3 dB test PSNR.</figcaption>
       </figure>
       <figure>
-        <video width="100%" muted autoplay loop playsinline preload="metadata" poster="assets/counter_compare.jpg"><source src="assets/counter_compare.mp4" type="video/mp4"></video>
+        <video width="100%" muted autoplay loop playsinline preload="metadata" poster="assets/counter_orbit.jpg"><source src="assets/counter_orbit.mp4" type="video/mp4"></video>
         <figcaption>Counter: 27.3 vs. 25.0 dB.</figcaption>
       </figure>
       <figure>
