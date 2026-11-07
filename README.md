@@ -5,5 +5,6 @@ Personal academic website of Jiaming Chu: https://chu-jiaming.github.io/
 - `index.html`: home page
 - `vggt-splat/`: project page for [VGGT-Splat](https://github.com/chu-jiaming/VGGT-Splat)
 - `poseguard-nerf/`: project page for [PoseGuard-NeRF](https://github.com/chu-jiaming/PoseGuard-NeRF)
+- `papers/`: hosted paper PDFs (`afve-bench.pdf` is the arXiv-version preprint of AFVE-Bench)
 
 Template adapted from [Jon Barron's website](https://github.com/jonbarron/jonbarron_website).
