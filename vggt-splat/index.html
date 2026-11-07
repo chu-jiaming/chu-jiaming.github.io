@@ -6,7 +6,7 @@
     <title>VGGT-Splat</title>
 
     <meta name="author" content="Jiaming Chu">
-    <meta name="description" content="Feed-forward VGGT poses versus COLMAP for 3D Gaussian Splatting: a controlled comparison on 6 scenes with 8, 16, 32 and all training frames, with and without a VGGT depth prior.">
+    <meta name="description" content="Feed-forward VGGT poses versus COLMAP for 3D Gaussian Splatting: a controlled experiment on 6 scenes with 8, 16, 32 and all training frames, with and without a VGGT depth prior.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta property="og:type" content="website">
     <meta property="og:title" content="VGGT-Splat">
@@ -82,7 +82,7 @@
         <strong>TL;DR</strong>
         <ul>
           <li><strong>16 frames or fewer: VGGT is reliable, COLMAP is not.</strong> At 8 frames COLMAP fails on 4 of 6 scenes; at 16 it fails on 3 and registers only 3/16 or 7/16 frames on two more. VGGT never fails.</li>
-          <li><strong>All frames: COLMAP wins by 2.1&ndash;4.6 dB on five of six scenes, and the gap is precision, not coverage.</strong> On test pixels that the training views do see, VGGT is still behind (garden 21.7 vs. 26.3 dB). VGGT is 3.5&ndash;13&times; faster at estimating poses.</li>
+          <li><strong>All frames: COLMAP wins by 2.1&ndash;4.6 dB on five of six scenes, and the gap is precision, not coverage.</strong> On test pixels that the training views do see, VGGT is still behind (garden 21.7 vs. 26.3 dB). VGGT is 3.6&ndash;13&times; faster at estimating poses.</li>
           <li><strong>A VGGT depth prior changes the geometry but not the novel views.</strong> Across seed repeats, only two of the differences exceed noise (&minus;0.68 dB and +0.17 dB). With few frames the bottleneck is regions no training view sees, and a prior on training views cannot reach them.</li>
         </ul>
       </div>
@@ -102,7 +102,7 @@
         <li><strong>VGGT + depth</strong>: the same, plus a Pearson loss between rendered inverse depth and VGGT depth (&lambda; = 0.2).</li>
       </ul>
       <p>
-        Evaluation follows the protocol used for pose-free methods. Test cameras come from a joint run on training and test frames, are mapped into the trained model's frame by a Sim(3) fitted on the shared training cameras, and are refined for 500 steps with the Gaussians frozen. Methods are compared on the test frames they all registered. Re-running a configuration with different seeds moves PSNR by 0.06&ndash;0.35 dB (standard deviation), so differences below about 0.3 dB are treated as noise.
+        Evaluation follows the protocol used for pose-free methods. Test cameras come from a joint run on training and test frames, are mapped into the trained model's frame by a Sim(3) fitted on the shared training cameras, and are refined for 500 steps with the Gaussians frozen. Methods are compared on the test frames they all registered. Re-running a configuration with different seeds moves PSNR by 0.06&ndash;0.35 dB (standard deviation), so single-run differences below about 0.3 dB are not conclusive; the depth-prior comparison is therefore checked with seed repeats.
       </p>
 
       <figure>
@@ -188,7 +188,7 @@
 
       <h2>Finding 1: with few frames, COLMAP fails and VGGT does not</h2>
       <p>
-        COLMAP needs enough overlap between views to match features and register cameras. With 8 frames it fails outright on desk, room, bicycle and counter, and registers 3/8 and 6/8 frames on lawn and garden. With 16 frames it still fails on lawn, room and counter. Even at 32 frames it registers only 10/32 frames on bicycle and 15/32 on desk, which is why its PSNR there is lower than at 16. VGGT returns a pose for every frame in every configuration.
+        COLMAP needs enough overlap between views to match features and register cameras. With 8 frames it fails outright on desk, room, bicycle and counter, and registers 3/8 and 6/8 frames on lawn and garden. With 16 frames it still fails on lawn, room and counter. Even at 32 frames it registers only 10/32 frames on bicycle and 15/32 on desk; on desk this is why its PSNR is lower than at 16. VGGT returns a pose for every frame in every configuration.
       </p>
       <figure>
         <img src="assets/fail_colmap_few.jpg" alt="Bicycle with 16 training frames: COLMAP registers 3 and the render is mostly floaters; VGGT reconstructs the bicycle and bench">
@@ -302,7 +302,7 @@
 
       <h2>Takeaway</h2>
       <p>
-        For a casual capture of 16 frames or fewer, VGGT is the safer front end for 3D Gaussian Splatting: it always produces usable poses, and COLMAP often does not. Once a capture has a hundred frames or more, COLMAP's bundle adjustment gives noticeably sharper results on most scenes, at 3.5&ndash;13&times; the pose-estimation time. A VGGT depth prior is not a substitute for more views: with few frames, what is missing is coverage, and only more views or priors on unseen regions can supply it.
+        For a casual capture of 16 frames or fewer, VGGT is the safer front end for 3D Gaussian Splatting: it always produces usable poses, and COLMAP often does not. Once a capture has a hundred frames or more, COLMAP's bundle adjustment gives noticeably sharper results on most scenes, at 3.6&ndash;13&times; the pose-estimation time. A VGGT depth prior is not a substitute for more views: with few frames, what is missing is coverage, and only more views or priors on unseen regions can supply it.
       </p>
 
       <h2>Limitations</h2>
@@ -312,7 +312,7 @@
 
       <h2>Reproducibility</h2>
       <p>
-        Code, the evaluation protocol, and the scripts that produce every table and figure on this page are in the <a href="https://github.com/chu-jiaming/VGGT-Splat">repository</a>, with pinned versions of gsplat, VGGT and COLMAP and the commands to rerun the full grid. The trained all-frames models of every scene (<code>.splat</code> and compressed <code>.ply</code>) and the self-captured frames are attached to the <a href="https://github.com/chu-jiaming/VGGT-Splat/releases/tag/v1.0.0">release</a>. The 3DGS trainer is a modified copy of gsplat's example trainer; every change is listed in <a href="https://github.com/chu-jiaming/VGGT-Splat/blob/main/trainer/NOTICE.md"><code>trainer/NOTICE.md</code></a>.
+        Code, the evaluation protocol, and the scripts that produce every table and figure on this page are in the <a href="https://github.com/chu-jiaming/VGGT-Splat">repository</a>, with pinned versions of gsplat, VGGT and COLMAP and the commands to rerun the full grid. The trained all-frames models of every scene (<code>.splat</code> and compressed <code>.ply</code>) and the self-captured frames are attached to the <a href="https://github.com/chu-jiaming/VGGT-Splat/releases/tag/v1.0.0">release page</a>. The 3DGS trainer is a modified copy of gsplat's example trainer; every change is listed in <a href="https://github.com/chu-jiaming/VGGT-Splat/blob/main/trainer/NOTICE.md"><code>trainer/NOTICE.md</code></a>.
       </p>
 
       <h2>Citation</h2>
@@ -321,7 +321,8 @@
                   3D Gaussian Splatting, from 8 Frames to All},
   author       = {Chu, Jiaming},
   year         = {2026},
-  howpublished = {\url{https://github.com/chu-jiaming/VGGT-Splat}}
+  howpublished = {\url{https://github.com/chu-jiaming/VGGT-Splat}},
+  note         = {Version 1.0.0}
 }</pre>
 
       <p class="footer"><a href="../">&larr; Jiaming Chu</a></p>

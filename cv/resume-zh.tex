@@ -56,9 +56,9 @@
      \link{https://github.com/chu-jiaming/VGGT-Splat}{代码}}%
     [\begin{itemize}
       \item 在 6 个场景 $\times$ 8 / 16 / 32 / 全部帧上完成 \emph{72 次}对照实验
-      \item 少帧时 COLMAP 在多数场景失败而 VGGT 从未失败；全部帧时 COLMAP 领先 \emph{2.1--4.6\,dB}，
-        原因是 VGGT 位姿精度较低而非覆盖不足
-      \item VGGT 深度先验改变了几何但未改善新视角渲染：少帧的瓶颈在于未观测区域
+      \item 少帧时 COLMAP 在多数场景失败而 VGGT 从未失败；全部帧时 COLMAP 在 6 个场景中的 5 个领先 \emph{2.1--4.6\,dB}，
+        原因可能是 VGGT 位姿精度较低而非覆盖不足
+      \item VGGT 深度先验改变了几何但几乎不影响新视角渲染：少帧的瓶颈在于未观测区域
     \end{itemize}]
 
   \experience%
@@ -69,10 +69,10 @@
     [\begin{itemize}
       \item 设计 \emph{45 组} vanilla NeRF 对照实验（9 种位姿噪声 $\times$ 5 种方法），
         分析联合位姿优化在何种条件下提升或损害重建质量
-      \item 相机学习率 warm-up 可恢复噪声位姿带来的大部分损失：5\% 平移噪声下
+      \item 相机学习率 warm-up 可恢复噪声位姿带来的相当一部分损失：5\% 平移噪声下
         PSNR 由 14.1 提升至 \emph{22.7\,dB}
-      \item 从真实位姿出发开启位姿优化反而使 PSNR 由 27.1 降至 17.9\,dB；仅在训练相机上拟合
-        Sim(3) 对齐即可恢复 \emph{+5.5\,dB}，说明下降源于全局坐标漂移而非重建变差
+      \item 从真实位姿出发开启 Naive 位姿优化反而使 PSNR 由 27.1 降至 17.9\,dB；仅在训练相机上拟合
+        Sim(3) 对齐即可恢复 \emph{+5.5\,dB}，说明下降主要源于全局坐标漂移而非重建变差
       \item 开源发布 v1.0.0，提供可复现配置、GitHub Actions CI 与 uv 环境管理
     \end{itemize}]
 

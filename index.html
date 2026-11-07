@@ -30,7 +30,7 @@
                   I received my B.Eng. in IntelliSense Engineering from <a href="https://www.hit.edu.cn/">Harbin Institute of Technology</a> in 2025.
                 </p>
                 <p>
-                  <strong>I am looking for research internships</strong> in generative models, large language models, 3D reconstruction, and world models. Feel free to reach out.
+                  I'm interested in generative models, large language models, 3D/4D reconstruction, and world models. Going forward, I want to explore combining generative models with 3D/4D reconstruction.
                 </p>
                 <p style="text-align:center">
                   <a href="mailto:jiaming.chu@sjtu.edu.cn">Email</a> &nbsp;/&nbsp;
@@ -45,9 +45,6 @@
             <tr>
               <td style="padding:16px;width:100%;vertical-align:middle">
                 <h2>Research</h2>
-                <p>
-                  I'm interested in generative models, large language models, 3D reconstruction, and world models. My current work studies how radiance fields behave when their inputs, such as camera poses, are imperfect, and how to evaluate them so that the metrics measure what we think they measure.
-                </p>
               </td>
             </tr>
           </tbody></table>
@@ -93,7 +90,7 @@
     <a href="https://github.com/chu-jiaming/VGGT-Splat">code</a>
     <p></p>
     <p>
-    A controlled comparison on 6 scenes &times; 8 / 16 / 32 / all frames: with few frames COLMAP fails on most scenes while VGGT never does; with all frames COLMAP leads by 2.1&ndash;4.6 dB because VGGT's poses are less precise, not because it covers less. A VGGT depth prior reshapes the geometry but leaves novel views unchanged, since the few-frame bottleneck is unseen regions.
+    A controlled experiment on 6 scenes &times; 8 / 16 / 32 / all frames: with few frames COLMAP fails on most scenes while VGGT never does; with all frames COLMAP leads by 2.1&ndash;4.6 dB on five of six scenes, likely because VGGT's poses are less precise, not because it covers less. A VGGT depth prior reshapes the geometry but barely changes novel views, since the few-frame bottleneck is unseen regions.
     </p>
   </td>
 </tr>
@@ -138,7 +135,7 @@
     <a href="https://github.com/chu-jiaming/PoseGuard-NeRF">code</a>
     <p></p>
     <p>
-    A controlled study of 45 vanilla-NeRF runs (9 pose-noise levels &times; 5 methods): a camera learning-rate warm-up lets joint pose optimization recover most of the quality lost to noisy poses (14.1 &rarr; 22.7 dB at 5% translation noise), yet enabling it from perfect poses drops PSNR from 27.1 to 17.9 dB. A Sim(3) fit on training cameras alone recovers +5.5 dB, revealing global coordinate drift rather than a worse reconstruction.
+    A controlled experiment with 45 vanilla-NeRF runs (9 pose-noise levels &times; 5 methods): a camera learning-rate warm-up lets joint pose optimization recover much of the quality lost to noisy poses (14.1 &rarr; 22.7 dB at 5% translation noise), yet enabling naive pose optimization from perfect poses drops PSNR from 27.1 to 17.9 dB. A Sim(3) fitted on training cameras alone recovers +5.5 dB, showing that most of the drop is global coordinate drift rather than a worse reconstruction.
     </p>
   </td>
 </tr>
@@ -202,7 +199,7 @@
               <td style="padding:0px">
                 <br>
                 <p style="text-align:right;font-size:small;">
-                  Last updated: November 7, 2026. Website template from <a href="https://github.com/jonbarron/jonbarron_website">Jon Barron</a>.
+                  Last updated: November 7, 2026. Website template from <a href="https://github.com/jonbarron/jonbarron_website">Jon Barron</a>, thanks!
                 </p>
               </td>
             </tr>

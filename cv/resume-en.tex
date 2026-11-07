@@ -55,10 +55,10 @@
      \link{https://chu-jiaming.github.io/vggt-splat/}{page} \textbullet{}
      \link{https://github.com/chu-jiaming/VGGT-Splat}{code}}%
     [\begin{itemize}
-      \item Controlled comparison of \emph{72 runs} on 6 scenes $\times$ 8 / 16 / 32 / all frames.
+      \item Controlled experiment with \emph{72 runs} on 6 scenes $\times$ 8 / 16 / 32 / all frames.
       \item With few frames COLMAP fails on most scenes while VGGT never does; with all frames COLMAP leads by
-        \emph{2.1--4.6\,dB} because VGGT's poses are less precise, not because it covers less.
-      \item A VGGT depth prior reshapes geometry but leaves novel views unchanged: the few-frame bottleneck is unseen regions.
+        \emph{2.1--4.6\,dB} on five of six scenes, likely because VGGT's poses are less precise, not because it covers less.
+      \item A VGGT depth prior reshapes geometry but barely changes novel views: the few-frame bottleneck is unseen regions.
     \end{itemize}]
 
   \experience%
@@ -67,12 +67,12 @@
      \link{https://chu-jiaming.github.io/poseguard-nerf/}{page} \textbullet{}
      \link{https://github.com/chu-jiaming/PoseGuard-NeRF}{code}}%
     [\begin{itemize}
-      \item Controlled study of \emph{45 vanilla-NeRF runs} (9 pose-noise levels $\times$ 5 methods)
+      \item Controlled experiment with \emph{45 vanilla-NeRF runs} (9 pose-noise levels $\times$ 5 methods)
         on when joint pose optimization helps or hurts.
-      \item A camera learning-rate warm-up recovers most of the loss from noisy poses:
+      \item A camera learning-rate warm-up recovers much of the loss from noisy poses:
         14.1 $\rightarrow$ \emph{22.7\,dB} PSNR at 5\% translation noise.
-      \item From perfect poses it drops PSNR 27.1 $\rightarrow$ 17.9\,dB, yet a Sim(3) fit on training
-        cameras recovers \emph{+5.5\,dB}: global drift, not a worse reconstruction.
+      \item Naive pose optimization from perfect poses drops PSNR 27.1 $\rightarrow$ 17.9\,dB, yet a Sim(3) fit on training
+        cameras recovers \emph{+5.5\,dB}: mostly global drift, not a worse reconstruction.
       \item Released v1.0.0 with reproducible configs, GitHub Actions CI and uv environments.
     \end{itemize}]
 
