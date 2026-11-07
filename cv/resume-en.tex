@@ -51,6 +51,18 @@
 \begin{experiences}
   \experience%
     {2026}%
+    {\textbf{VGGT-Splat: Feed-forward VGGT Poses vs.\ COLMAP for 3D Gaussian Splatting} \hfill
+     \link{https://chu-jiaming.github.io/vggt-splat/}{page} \textbullet{}
+     \link{https://github.com/chu-jiaming/VGGT-Splat}{code}}%
+    [\begin{itemize}
+      \item Controlled comparison of \emph{72 runs} on 6 scenes $\times$ 8 / 16 / 32 / all frames.
+      \item With few frames COLMAP fails on most scenes while VGGT never does; with all frames COLMAP leads by
+        \emph{2.1--4.6\,dB} because VGGT's poses are less precise, not because it covers less.
+      \item A VGGT depth prior reshapes geometry but leaves novel views unchanged: the few-frame bottleneck is unseen regions.
+    \end{itemize}]
+
+  \experience%
+    {2026}%
     {\textbf{PoseGuard-NeRF: When Does Joint Camera-Pose Optimization Help NeRF?} \hfill
      \link{https://chu-jiaming.github.io/poseguard-nerf/}{page} \textbullet{}
      \link{https://github.com/chu-jiaming/PoseGuard-NeRF}{code}}%
@@ -62,6 +74,16 @@
       \item From perfect poses it drops PSNR 27.1 $\rightarrow$ 17.9\,dB, yet a Sim(3) fit on training
         cameras recovers \emph{+5.5\,dB}: global drift, not a worse reconstruction.
       \item Released v1.0.0 with reproducible configs, GitHub Actions CI and uv environments.
+    \end{itemize}]
+
+  \experience%
+    {2026}%
+    {\textbf{AFVE-Bench: Abandoned-Frame Verbalization in Multi-Turn LLM Revision} \hfill
+     \link{https://chu-jiaming.github.io/papers/afve-bench.pdf}{preprint}}%
+    [\begin{itemize}
+      \item Benchmark for revisions that adopt the user's new frame yet still expose the abandoned one:
+        \emph{192} bilingual dialogues, \emph{4,204} doubly annotated responses from 11 model configurations.
+      \item The error hits \emph{25.5\%} of history-conditioned responses; \emph{19.8\%} of target-passing ones still verbalize the old frame.
     \end{itemize}]
 \end{experiences}
 
@@ -118,6 +140,7 @@
   % \item High-current power module PCB for precision instruments (Altium Designer, MPS).
   \end{itemize}}
 \end{experiences}
+\clearpage
 
 %======================================================================
 \sectionTitle{Honors \& Awards}{\faTrophy}

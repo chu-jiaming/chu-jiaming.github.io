@@ -51,6 +51,18 @@
 \begin{experiences}
   \experience%
     {2026}%
+    {\textbf{VGGT-Splat：前馈 VGGT 位姿与 COLMAP 在 3DGS 上的对比} \hfill
+     \link{https://chu-jiaming.github.io/vggt-splat/}{主页} \textbullet{}
+     \link{https://github.com/chu-jiaming/VGGT-Splat}{代码}}%
+    [\begin{itemize}
+      \item 在 6 个场景 $\times$ 8 / 16 / 32 / 全部帧上完成 \emph{72 次}对照实验
+      \item 少帧时 COLMAP 在多数场景失败而 VGGT 从未失败；全部帧时 COLMAP 领先 \emph{2.1--4.6\,dB}，
+        原因是 VGGT 位姿精度较低而非覆盖不足
+      \item VGGT 深度先验改变了几何但未改善新视角渲染：少帧的瓶颈在于未观测区域
+    \end{itemize}]
+
+  \experience%
+    {2026}%
     {\textbf{PoseGuard-NeRF：联合相机位姿优化何时帮助 NeRF？} \hfill
      \link{https://chu-jiaming.github.io/poseguard-nerf/}{主页} \textbullet{}
      \link{https://github.com/chu-jiaming/PoseGuard-NeRF}{代码}}%
@@ -62,6 +74,16 @@
       \item 从真实位姿出发开启位姿优化反而使 PSNR 由 27.1 降至 17.9\,dB；仅在训练相机上拟合
         Sim(3) 对齐即可恢复 \emph{+5.5\,dB}，说明下降源于全局坐标漂移而非重建变差
       \item 开源发布 v1.0.0，提供可复现配置、GitHub Actions CI 与 uv 环境管理
+    \end{itemize}]
+
+  \experience%
+    {2026}%
+    {\textbf{AFVE-Bench：多轮 LLM 修订中的弃用框架残留表达评测} \hfill
+     \link{https://chu-jiaming.github.io/papers/afve-bench.pdf}{预印本}}%
+    [\begin{itemize}
+      \item 构建评测：输出已采用用户的新框架却仍暴露被放弃的旧框架；\emph{192 组}中英双语对话，
+        11 个模型配置的 \emph{4,204 条}回复经双人盲标与仲裁
+      \item 该错误出现在 \emph{25.5\%} 的有历史条件回复中，通过目标要求的回复里仍有 \emph{19.8\%} 暴露旧框架
     \end{itemize}]
 \end{experiences}
 
@@ -118,6 +140,7 @@
   % \item 仪器大电流电源模块设计（Altium Designer, MPS）：设计精密仪器使用的大电流电源模块 PCB
   \end{itemize}}
 \end{experiences}
+\clearpage
 
 %======================================================================
 \sectionTitle{竞赛获奖}{\faTrophy}
