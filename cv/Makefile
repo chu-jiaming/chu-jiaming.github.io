@@ -10,7 +10,7 @@
 
 LATEXMK := latexmk
 FLAGS   := -interaction=nonstopmode -halt-on-error
-DEPS    := resume.cls .latexmkrc $(wildcard private.tex)
+DEPS    := resume.cls .latexmkrc $(wildcard private*.tex)
 
 .PHONY: all zh en watch publish clean distclean
 

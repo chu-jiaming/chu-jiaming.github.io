@@ -12,6 +12,7 @@
 \fileinfo{\faEdit{} \today}
 
 \name{Jiaming}{Chu}
+\photo{3.0cm}{../images/photo.jpg}
 
 \profile{
   \privatemobile
@@ -51,39 +52,37 @@
 \begin{experiences}
   \experience%
     {2026}%
-    {\textbf{VGGT-Splat: Feed-forward VGGT Poses vs.\ COLMAP for 3D Gaussian Splatting} \hfill
-     \link{https://chu-jiaming.github.io/vggt-splat/}{page} \textbullet{}
-     \link{https://github.com/chu-jiaming/VGGT-Splat}{code}}%
+    {\projecttitle{VGGT-Splat: Can VGGT Replace COLMAP for 3DGS Reconstruction} \hfill
+     \pagelink{https://chu-jiaming.github.io/vggt-splat/}{page}\enspace
+     \codelink{https://github.com/chu-jiaming/VGGT-Splat}{code}}%
     [\begin{itemize}
-      \item Controlled experiment with \emph{72 runs} on 6 scenes $\times$ 8 / 16 / 32 / all frames.
-      \item With few frames COLMAP fails on most scenes while VGGT never does; with all frames COLMAP leads by
-        \emph{2.1--4.6\,dB} on five of six scenes, likely because VGGT's poses are less precise, not because it covers less.
-      \item A VGGT depth prior reshapes geometry but barely changes novel views: the few-frame bottleneck is unseen regions.
+      \item Problem: 3DGS from phone video first needs camera poses. How many frames do COLMAP and feed-forward VGGT need? Does a VGGT depth prior help with few frames?
+      \item Method (independent project): 6 scenes $\times$ 8/16/32/all frames $\times$ 3 methods, 72 runs.
+      \item Result 1: \keypoint{VGGT is more reliable with few frames; COLMAP is better with all frames.} COLMAP fails on 4 of 6 scenes at 8 frames and 3 of 6 at 16, VGGT never;
+        with all frames COLMAP leads by 2.1--4.6\,dB on five scenes, likely because VGGT's poses are less precise.
+      \item Result 2: \keypoint{The depth prior barely improves novel views.} With few frames the error sits in regions no training view sees, which a depth loss cannot reach.
     \end{itemize}]
-
+  \separator{0.5ex}
   \experience%
     {2026}%
-    {\textbf{PoseGuard-NeRF: When Does Joint Camera-Pose Optimization Help NeRF?} \hfill
-     \link{https://chu-jiaming.github.io/poseguard-nerf/}{page} \textbullet{}
-     \link{https://github.com/chu-jiaming/PoseGuard-NeRF}{code}}%
+    {\projecttitle{PoseGuard-NeRF: When Does Joint Pose Optimization Help NeRF} \hfill
+     \pagelink{https://chu-jiaming.github.io/poseguard-nerf/}{page}\enspace
+     \codelink{https://github.com/chu-jiaming/PoseGuard-NeRF}{code}}%
     [\begin{itemize}
-      \item Controlled experiment with \emph{45 vanilla-NeRF runs} (9 pose-noise levels $\times$ 5 methods)
-        on when joint pose optimization helps or hurts.
-      \item A camera learning-rate warm-up recovers much of the loss from noisy poses:
-        14.1 $\rightarrow$ \emph{22.7\,dB} PSNR at 5\% translation noise.
-      \item Naive pose optimization from perfect poses drops PSNR 27.1 $\rightarrow$ 17.9\,dB, yet a Sim(3) fit on training
-        cameras recovers \emph{+5.5\,dB}: mostly global drift, not a worse reconstruction.
-      \item Released v1.0.0 with reproducible configs, GitHub Actions CI and uv environments.
+      \item Problem: NeRF needs accurate camera poses. Joint pose optimization can correct errors, but when does it help and when does it hurt?
+      \item Method (independent project): Lego scene, 9 pose conditions $\times$ 5 methods, 45 vanilla-NeRF runs; Sim(3) alignment separates worse reconstruction from coordinate drift.
+      \item Result 1: \keypoint{With noisy poses, joint optimization clearly helps.} At 5\% translation noise, PSNR rises from 14.1\,dB (fixed cameras) to 22.7\,dB (with warm-up).
+      \item Result 2: \keypoint{With accurate poses, it lowers PSNR, mostly through global drift.} Without warm-up PSNR drops 27.1 $\rightarrow$ 17.9\,dB; Sim(3) alignment recovers 5.5\,dB.
     \end{itemize}]
-
+  \separator{0.5ex}
   \experience%
     {2026}%
-    {\textbf{AFVE-Bench: Abandoned-Frame Verbalization in Multi-Turn LLM Revision} \hfill
-     \link{https://chu-jiaming.github.io/papers/afve-bench.pdf}{preprint}}%
+    {\projecttitle{AFVE-Bench: Abandoned-Frame Verbalization} \privatenote{noteen}\hfill
+     \paperlink{https://chu-jiaming.github.io/papers/afve-bench.pdf}{preprint}}%
     [\begin{itemize}
-      \item Benchmark for revisions that adopt the user's new frame yet still expose the abandoned one:
-        \emph{192} bilingual dialogues, \emph{4,204} doubly annotated responses from 11 model configurations.
-      \item The error hits \emph{25.5\%} of history-conditioned responses; \emph{19.8\%} of target-passing ones still verbalize the old frame.
+      \item Problem: asked to rewrite under a new frame, an LLM may adopt it yet still expose the abandoned one. Existing benchmarks mainly check the latest target and can miss this.
+      \item Method (first author): 192 bilingual four-turn dialogues across 8 writing domains; 4,204 responses from 11 model configurations, blind double-annotated and adjudicated.
+      \item Result: \keypoint{Meeting the new target does not stop the old frame from showing.} 25.5\% of responses after old-frame turns show it; so do 19.8\% of those meeting the target.
     \end{itemize}]
 \end{experiences}
 
@@ -94,37 +93,37 @@
   \experience%
     [Jan 2023]%
     {Jul 2023}%
-    {\textbf{Captain, Team Lilac 12} @ HIT Smartcar \& Innovation Club}%
+    {\textbf{Captain, Team Lilac 12 (Provincial Second Prize)} @ HIT Smartcar \& Innovation Club}%
     [\begin{itemize}
-      \item Led vision support; built ROS packages, tuned navigation (SLAM, path planning) and wrote docs.
+      \item Led \textbf{computer vision} support; built ROS packages, tuned navigation (SLAM, path planning) and wrote docs.
     \end{itemize}]
   \separator{0.5ex}
   \experience%
     [Nov 2023]%
     {Apr 2024}%
-    {\textbf{Team Member} @ HIT Center of Ultra-Precision Optoelectronic Instrument Engineering}%
+    {\textbf{Instrument Design (National Second Prize)} @ HIT}%
     [\begin{itemize}
-      \item Single-beam 3-DoF ultra-precision laser interferometer: host communication and data
-        visualization; the entry won a national second prize (see Awards).
+      \item Center of Ultra-Precision Optoelectronic Instrument Engineering: single-beam 3-DoF ultra-precision laser interferometer, host communication and data visualization.
+      \item Tech stack: image processing, optical principles, programming.
     \end{itemize}]
   \separator{0.5ex}
   \experience%
     [Dec 2023]%
     {Jan 2024}%
-    {\textbf{Mathematical Modeling (Team Lead)}}%
+    {\textbf{Mathematical Modeling (Team Lead, ICM Honorable Mention)}}%
     [\begin{itemize}
-      \item Built the models, wrote the code and the paper; won an ICM Honorable Mention.
+      \item Built the models, wrote the code and the paper.
     \end{itemize}]
-  % [trimmed] weakly related to the target roles; uncomment if needed
-  % \separator{0.5ex}
-  % \experience%
-  %   [Mar 2024]%
-  %   {Apr 2024}%
-  %   {\textbf{Visiting Student} @ Shanghai Infocrops Science \& Technology Co., Ltd.}%
-  %   [\begin{itemize}
-  %     \item Intelligent vision training.
-  %   \end{itemize}]
+  \separator{0.5ex}
+  \experience%
+    [Mar 2024]%
+    {Apr 2024}%
+    {\textbf{Visiting Student} @ Shanghai Infocrops Science \& Technology Co., Ltd.}%
+    [\begin{itemize}
+      \item Intelligent vision training.
+    \end{itemize}]
 \end{experiences}
+\clearpage
 
 %======================================================================
 \sectionTitle{Other Projects}{\faCode}
@@ -140,15 +139,14 @@
   % \item High-current power module PCB for precision instruments (Altium Designer, MPS).
   \end{itemize}}
 \end{experiences}
-\clearpage
 
 %======================================================================
 \sectionTitle{Honors \& Awards}{\faTrophy}
 %======================================================================
 \begin{experiences}
   \entry{2024}{\emph{Honorable Mention}, Interdisciplinary Contest in Modeling (ICM), COMAP}
-  \entry{2023}{\emph{Second National Prize}, 7th China (International) Sensor Innovation Contest}
-  \entry{2023}{\emph{Provincial Second Prize}, National University Students Intelligent Car Race}
+  \entry{2024}{\emph{Second National Prize}, 7th China (International) Sensor Innovation Contest}
+  \entry{2023}{\emph{Provincial Second Prize}, 18th National University Students Intelligent Car Race (Aerospace Smart Logistics)}
 \end{experiences}
 
 %======================================================================
@@ -157,9 +155,10 @@
 \begin{competences}
   \comptence{Programming}{Python, C/C++, MATLAB}
   \comptence{Frameworks}{PyTorch, OpenCV, NumPy}
+  \comptence{3D Vision}{COLMAP, 3DGS (gsplat), NeRF (Nerfstudio)}
   \comptence{Systems}{Linux, ROS}
   \comptence{Dev Tools}{Git, Conda, uv, LaTeX}
-  \comptence{Languages}{Chinese (native), English (proficient)}
+  \comptence{Languages}{Chinese (native), English (CET-6: 465)}
 \end{competences}
 
 \end{document}

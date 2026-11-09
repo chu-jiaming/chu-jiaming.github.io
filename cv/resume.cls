@@ -207,6 +207,18 @@
 
 \newcommand*{\link}[2]{\textcolor{linkcolor}{\href{#1}{#2}}}
 
+% Project links with an icon, to make them read as clickable:
+% \pagelink{<url>}{<label>}, \codelink{<url>}{<label>}, \paperlink{<url>}{<label>}
+% Key conclusion in a project bullet: bold, in the section-title color.
+\newcommand*{\keypoint}[1]{\textcolor{accentcolor}{\textbf{#1}}}
+% Project title, slightly larger than body text; adjust the factor here.
+\newcommand*{\projecttitle}[1]{{%
+  \fontsize{\dimexpr1.08\dimexpr\f@size pt\relax\relax}{\baselineskip}\selectfont
+  \bfseries #1}}
+\newcommand*{\pagelink}[2]{\link{#1}{\homepageSymbol\,#2}}
+\newcommand*{\codelink}[2]{\link{#1}{\githubSymbol\,#2}}
+\newcommand*{\paperlink}[2]{\link{#1}{\faFilePdf\,#2}}
+
 \def\@iconsize{\normalsize}
 \newcommand*{\iconsize}[1]{\def\@iconsize{#1}}
 
@@ -325,6 +337,14 @@
     \ifdef{\myphone}{\mobile{\myphone}}{}%
   }%
 }
+% Optional local-only note, also skipped by public builds:
+% \privatenote{<name>} expands \<name> if private-notes.tex defines it.
+\newcommand*{\privatenote}[1]{%
+  \ifdef{\publicbuild}{}{%
+    \IfFileExists{private-notes.tex}{\input{private-notes.tex}}{}%
+    \ifcsdef{#1}{\csuse{#1}}{}%
+  }%
+}
 % Email address
 \newcommand*{\email}[1]{%
   \iconlink{\mailSymbol}{mailto:#1}{\texttt{#1}}
@@ -347,13 +367,6 @@
 
 % Render resume header
 \newcommand*{\makeheader}{
-  \ifdef{\@photodiameter}{
-    \begin{minipage}{\@photodiameter}
-      \tikz\path[fill overzoom image={\@photo}]
-        circle[radius=0.5\linewidth];
-    \end{minipage}
-    \hspace{1em}
-  }{}
   \ifundef{\@photodiameter}{%
     \begin{minipage}{\linewidth}
   }{%
@@ -367,6 +380,17 @@
     \medskip \\
     \@profile
   \end{minipage}
+  \ifdef{\@photodiameter}{%
+    \hfill
+    % The photo overhangs its box by 1mm top and bottom, so it takes 2mm less
+    % height and the body still fits on 2 pages.
+    \raisebox{0pt}[\dimexpr(\@photodiameter-2mm)/2\relax][\dimexpr(\@photodiameter-2mm)/2\relax]{%
+      \begin{minipage}{\@photodiameter}
+        \tikz\path[fill overzoom image={\@photo}]
+          circle[radius=0.5\linewidth];
+      \end{minipage}%
+    }
+  }{}
 }
 
 %%

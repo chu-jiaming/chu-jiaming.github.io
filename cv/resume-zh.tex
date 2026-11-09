@@ -12,6 +12,7 @@
 \fileinfo{\faEdit{} \today}
 
 \name{嘉明}{褚}
+\photo{3.0cm}{../images/photo.jpg}
 
 \profile{
   \privatemobile
@@ -51,39 +52,38 @@
 \begin{experiences}
   \experience%
     {2026}%
-    {\textbf{VGGT-Splat：前馈 VGGT 位姿与 COLMAP 在 3DGS 上的对比} \hfill
-     \link{https://chu-jiaming.github.io/vggt-splat/}{主页} \textbullet{}
-     \link{https://github.com/chu-jiaming/VGGT-Splat}{代码}}%
+    {\projecttitle{VGGT-Splat：VGGT 能否替代 COLMAP 做 3DGS 重建} \hfill
+     \pagelink{https://chu-jiaming.github.io/vggt-splat/}{项目主页}\enspace
+     \codelink{https://github.com/chu-jiaming/VGGT-Splat}{代码}}%
     [\begin{itemize}
-      \item 在 6 个场景 $\times$ 8 / 16 / 32 / 全部帧上完成 \emph{72 次}对照实验
-      \item 少帧时 COLMAP 在多数场景失败而 VGGT 从未失败；全部帧时 COLMAP 在 6 个场景中的 5 个领先 \emph{2.1--4.6\,dB}，
-        原因可能是 VGGT 位姿精度较低而非覆盖不足
-      \item VGGT 深度先验改变了几何但几乎不影响新视角渲染：少帧的瓶颈在于未观测区域
+      \item 问题：手机视频做 3D 高斯（3DGS）重建要先估计位姿。COLMAP 和前馈模型 VGGT 各需要多少帧？少帧时 VGGT 深度先验有用吗？
+      \item 做法（独立完成）：6 个场景 $\times$ 4 种帧数（8 / 16 / 32 / 全部）$\times$ 3 种方法，共 72 次实验
+      \item 结果一：\keypoint{少帧时 VGGT 更可靠，全部帧时 COLMAP 更好。}COLMAP 在 8 帧时 4/6 个场景失败、16 帧时 3/6 个场景失败，VGGT 未失败；
+        全部帧时 COLMAP 在 5 个场景领先 2.1--4.6\,dB，可能因为 VGGT 位姿精度较低
+      \item 结果二：\keypoint{深度先验几乎不提升新视角质量。}少帧时误差集中在训练视角没拍到的区域，深度损失约束不到
     \end{itemize}]
-
+  \separator{0.5ex}
   \experience%
     {2026}%
-    {\textbf{PoseGuard-NeRF：联合相机位姿优化何时帮助 NeRF？} \hfill
-     \link{https://chu-jiaming.github.io/poseguard-nerf/}{主页} \textbullet{}
-     \link{https://github.com/chu-jiaming/PoseGuard-NeRF}{代码}}%
+    {\projecttitle{PoseGuard-NeRF：联合相机位姿优化何时帮助 NeRF} \hfill
+     \pagelink{https://chu-jiaming.github.io/poseguard-nerf/}{项目主页}\enspace
+     \codelink{https://github.com/chu-jiaming/PoseGuard-NeRF}{代码}}%
     [\begin{itemize}
-      \item 设计 \emph{45 组} vanilla NeRF 对照实验（9 种位姿噪声 $\times$ 5 种方法），
-        分析联合位姿优化在何种条件下提升或损害重建质量
-      \item 相机学习率 warm-up 可恢复噪声位姿带来的相当一部分损失：5\% 平移噪声下
-        PSNR 由 14.1 提升至 \emph{22.7\,dB}
-      \item 从真实位姿出发开启 Naive 位姿优化反而使 PSNR 由 27.1 降至 17.9\,dB；仅在训练相机上拟合
-        Sim(3) 对齐即可恢复 \emph{+5.5\,dB}，说明下降主要源于全局坐标漂移而非重建变差
-      \item 开源发布 v1.0.0，提供可复现配置、GitHub Actions CI 与 uv 环境管理
+      \item 问题：NeRF 依赖准确位姿。训练时联合优化位姿可以修正误差，但何时有用、何时有害？
+      \item 做法（独立完成）：Lego 场景，9 种位姿条件 $\times$ 5 种方法，共 45 组 vanilla NeRF 实验；用 Sim(3) 对齐区分重建变差和坐标偏移
+      \item 结果一：\keypoint{位姿有噪声时，联合优化明显有用。}5\% 平移噪声下，PSNR 从固定位姿的 14.1\,dB 升至 22.7\,dB（加 warm-up）
+      \item 结果二：\keypoint{位姿准确时，联合优化反而降低 PSNR，主要原因是全局坐标漂移。}不加 warm-up 时由 27.1 降至 17.9\,dB，
+        Sim(3) 对齐后恢复 5.5\,dB
     \end{itemize}]
-
+  \separator{0.5ex}
   \experience%
     {2026}%
-    {\textbf{AFVE-Bench：多轮 LLM 修订中的弃用框架残留表达评测} \hfill
-     \link{https://chu-jiaming.github.io/papers/afve-bench.pdf}{预印本}}%
+    {\projecttitle{AFVE-Bench：LLM 改写中的旧框架残留评测} \privatenote{notezh}\hfill
+     \paperlink{https://chu-jiaming.github.io/papers/afve-bench.pdf}{预印本}}%
     [\begin{itemize}
-      \item 构建评测：输出已采用用户的新框架却仍暴露被放弃的旧框架；\emph{192 组}中英双语对话，
-        11 个模型配置的 \emph{4,204 条}回复经双人盲标与仲裁
-      \item 该错误出现在 \emph{25.5\%} 的有历史条件回复中，通过目标要求的回复里仍有 \emph{19.8\%} 暴露旧框架
+      \item 问题：用户要求换框架重写时，模型可能写对了新内容，却仍暴露旧框架。现有评测主要看最新要求，容易漏掉
+      \item 做法（第一作者）：192 组中英双语四轮对话，覆盖 8 类写作任务；11 个模型配置的 4,204 条回复经双人盲标与仲裁
+      \item 结果：\keypoint{满足新要求不等于旧框架不再暴露。}此前按旧框架写过内容的回复中，25.5\% 出现这类错误；已满足新要求的回复里，仍有 19.8\% 暴露旧框架
     \end{itemize}]
 \end{experiences}
 
@@ -94,37 +94,38 @@
   \experience%
     [2023.01]%
     {2023.07}%
-    {\textbf{智能车开发（队长）} @ 哈尔滨工业大学智能车创新俱乐部}%
+    {\textbf{智能车开发（队长，线下选拔赛二等奖）} @ 哈尔滨工业大学智能车创新俱乐部}%
     [\begin{itemize}
-      \item 负责计算机视觉技术支持，参与 ROS 包构建与导航参数调试，撰写技术文档
+      \item 负责\textbf{计算机视觉}技术支持，参与 ROS 包构建与导航参数调试，撰写技术文档
       \item 技术栈涵盖计算机视觉、SLAM、路径规划、单片机编程与机械结构分析
     \end{itemize}]
   \separator{0.5ex}
   \experience%
     [2023.11]%
     {2024.04}%
-    {\textbf{仪器设计} @ 哈尔滨工业大学超精密光电仪器工程研究所}%
+    {\textbf{仪器设计（传感器创新大赛全国二等奖）} @ 哈尔滨工业大学超精密光电仪器工程研究所}%
     [\begin{itemize}
-      \item 参与\enquote{单光束三自由度超精密激光干涉仪}设计，实现仪器与上位机通信及测量数据可视化；该作品获传感器创新大赛全国二等奖
+      \item 参与\enquote{单光束三自由度超精密激光干涉仪}设计，实现仪器与上位机通信及测量数据可视化
+      \item 技术栈涵盖图像处理、光学原理、程序设计
     \end{itemize}]
   \separator{0.5ex}
   \experience%
     [2023.12]%
     {2024.01}%
-    {\textbf{数学建模（队长）}}%
+    {\textbf{数学建模（队长，ICM H 奖）}}%
     [\begin{itemize}
-      \item 负责模型建立、代码编写与论文撰写；学习数据处理、科研绘图与科研写作
+      \item 负责模型建立、代码编写与论文撰写
     \end{itemize}]
-  % [精简] 与目标方向关联较弱，需要时取消注释
-  % \separator{0.5ex}
-  % \experience%
-  %   [2024.03]%
-  %   {2024.04}%
-  %   {\textbf{智能视觉技术培训} @ 讯技光电科技有限公司}%
-  %   [\begin{itemize}
-  %     \item 学习智能视觉和机器学习等相关知识
-  %   \end{itemize}]
+  \separator{0.5ex}
+  \experience%
+    [2024.03]%
+    {2024.04}%
+    {\textbf{智能视觉技术培训} @ 讯技光电科技有限公司}%
+    [\begin{itemize}
+      \item 学习智能视觉和机器学习等相关知识
+    \end{itemize}]
 \end{experiences}
+\clearpage
 
 %======================================================================
 \sectionTitle{其他项目}{\faCode}
@@ -140,14 +141,13 @@
   % \item 仪器大电流电源模块设计（Altium Designer, MPS）：设计精密仪器使用的大电流电源模块 PCB
   \end{itemize}}
 \end{experiences}
-\clearpage
 
 %======================================================================
 \sectionTitle{竞赛获奖}{\faTrophy}
 %======================================================================
 \begin{experiences}
   \entry{2024}{美国大学生数学建模竞赛（ICM）\emph{H 奖}}
-  \entry{2023}{第七届中国（国际）传感器创新大赛\emph{全国二等奖}}
+  \entry{2024}{第七届中国（国际）传感器创新大赛\emph{全国二等奖}}
   \entry{2023}{第十八届全国大学生智能汽车竞赛航天智慧物流线下选拔赛\emph{二等奖}}
 \end{experiences}
 
@@ -157,9 +157,10 @@
 \begin{competences}
   \comptence{编程语言}{Python, C/C++, MATLAB}
   \comptence{框架与库}{PyTorch, OpenCV, NumPy}
+  \comptence{3D 视觉}{COLMAP, 3DGS (gsplat), NeRF (Nerfstudio)}
   \comptence{系统与平台}{Linux, ROS}
   \comptence{开发工具}{Git, Conda, uv, LaTeX}
-  \comptence{语言}{中文（母语），英语（优良）}
+  \comptence{语言}{中文（母语），英语（CET-6 465）}
 \end{competences}
 
 \end{document}
