@@ -77,7 +77,7 @@
   \separator{0.5ex}
   \experience%
     {2026}%
-    {\projecttitle{AFVE-Bench: Abandoned-Frame Verbalization} \privatenote{noteen}\hfill
+    {\projecttitle{AFVE-Bench: Abandoned-Frame Verbalization} \ifdef{\publicbuild}{(Under Review)}{\privatenote{noteen}}\hfill
      \paperlink{https://chu-jiaming.github.io/papers/afve-bench.pdf}{preprint}}%
     [\begin{itemize}
       \item Problem: asked to rewrite under a new frame, an LLM may adopt it yet still expose the abandoned one. Existing benchmarks mainly check the latest target and can miss this.
