@@ -208,7 +208,8 @@
 \newcommand*{\link}[2]{\textcolor{linkcolor}{\href{#1}{#2}}}
 
 % Project links with an icon, to make them read as clickable:
-% \pagelink{<url>}{<label>}, \codelink{<url>}{<label>}, \paperlink{<url>}{<label>}
+% \pagelink{<url>}{<label>}, \codelink{<url>}{<label>}, \paperlink{<url>}{<label>},
+% \arxivlink{<url>}{<label>}
 % Key conclusion in a project bullet: bold, in the section-title color.
 \newcommand*{\keypoint}[1]{\textcolor{accentcolor}{\textbf{#1}}}
 % Project title, slightly larger than body text; adjust the factor here.
@@ -218,6 +219,9 @@
 \newcommand*{\pagelink}[2]{\link{#1}{\homepageSymbol\,#2}}
 \newcommand*{\codelink}[2]{\link{#1}{\githubSymbol\,#2}}
 \newcommand*{\paperlink}[2]{\link{#1}{\faFilePdf\,#2}}
+% arXiv icon from Academicons (OFL), loaded by file name so XeTeX uses the OpenType font
+\newfontfamily\arxiv@font{academicons.otf}
+\newcommand*{\arxivlink}[2]{\link{#1}{{\arxiv@font\symbol{"E974}}\,#2}}
 
 \def\@iconsize{\normalsize}
 \newcommand*{\iconsize}[1]{\def\@iconsize{#1}}
